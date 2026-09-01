@@ -6,11 +6,27 @@ class Usuario extends Model
 
     public function porEmail(string $email): ?array
     {
-        $stmt = $this->db->prepare('SELECT * FROM usuarios WHERE email = :email LIMIT 1');
+        $sql = "SELECT u.*, r.nombre AS rol_nombre
+                FROM usuarios u
+                LEFT JOIN cat_roles r ON r.id = u.rol_id
+                WHERE u.email = :email
+                LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
         $stmt->execute(['email' => $email]);
         $row = $stmt->fetch();
 
         return $row ?: null;
+    }
+
+    public function conRol(): array
+    {
+        $sql = "SELECT u.*, r.nombre AS rol_nombre
+                FROM usuarios u
+                LEFT JOIN cat_roles r ON r.id = u.rol_id
+                ORDER BY u.nombre ASC";
+
+        return $this->db->query($sql)->fetchAll();
     }
 
     public function create(array $data): int

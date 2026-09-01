@@ -12,6 +12,7 @@
             <thead>
                 <tr>
                     <th>Nombre</th>
+                    <th>Liga</th>
                     <th>Categoría</th>
                     <th>Temporada</th>
                     <th class="text-end">Acciones</th>
@@ -21,7 +22,12 @@
                 <?php if (!empty($equipos)): ?>
                     <?php foreach ($equipos as $e): ?>
                         <tr>
-                            <td><?= htmlspecialchars($e['nombre']) ?></td>
+                            <td>
+                                <a href="<?= BASE_URL ?>/equipos/detalle/<?= $e['id'] ?>" class="link-equipo">
+                                    <?= htmlspecialchars($e['nombre']) ?>
+                                </a>
+                            </td>
+                            <td><?= htmlspecialchars($e['liga_nombre'] ?? 'Sin liga') ?></td>
                             <td><?= htmlspecialchars($e['categoria'] ?? '-') ?></td>
                             <td><?= htmlspecialchars($e['temporada'] ?? '-') ?></td>
                             <td class="text-end">
@@ -32,7 +38,7 @@
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-4">No hay equipos registrados.</td>
+                        <td colspan="5" class="text-center text-muted py-4">No hay equipos registrados.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>

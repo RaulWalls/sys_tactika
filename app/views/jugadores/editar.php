@@ -4,9 +4,18 @@
 </div>
 
 <div class="card form-card">
-    <form method="post" action="<?= BASE_URL ?>/jugadores/editar/<?= $jugador['id'] ?>">
+    <form method="post" action="<?= BASE_URL ?>/jugadores/editar/<?= $jugador['id'] ?>" enctype="multipart/form-data">
 
         <div class="row g-3">
+            <div class="col-md-12">
+                <label class="form-label">Foto del jugador</label>
+                <div class="escudo-preview" id="foto-preview">
+                    <span class="escudo-placeholder-icon" id="foto-placeholder" style="<?= !empty($jugador['foto']) ? 'display:none;' : '' ?>">👕</span>
+                    <img id="foto-preview-img" src="<?= !empty($jugador['foto']) ? BASE_URL . '/' . htmlspecialchars($jugador['foto']) : '' ?>" alt="Foto" style="<?= empty($jugador['foto']) ? 'display:none;' : '' ?>">
+                </div>
+                <input type="file" name="foto" accept="image/*" class="form-control" data-preview-img="foto-preview-img" data-preview-placeholder="foto-placeholder">
+            </div>
+
             <div class="col-md-6">
                 <label class="form-label">Nombre</label>
                 <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($jugador['nombre']) ?>" required>
@@ -31,7 +40,14 @@
 
             <div class="col-md-3">
                 <label class="form-label">Posición</label>
-                <input type="text" name="posicion" class="form-control" value="<?= htmlspecialchars($jugador['posicion'] ?? '') ?>">
+                <select name="posicion_id" class="form-select">
+                    <option value="">Sin posición</option>
+                    <?php foreach ($posiciones as $p): ?>
+                        <option value="<?= $p['id'] ?>" <?= (int) ($jugador['posicion_id'] ?? 0) === (int) $p['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($p['nombre']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="col-md-3">
@@ -63,6 +79,13 @@
                         </option>
                     <?php endforeach; ?>
                 </select>
+            </div>
+
+            <div class="col-md-12 d-flex align-items-center">
+                <div class="form-check">
+                    <input type="checkbox" name="capitan" id="capitan" class="form-check-input" value="1" <?= !empty($jugador['capitan']) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="capitan">Capitán del equipo</label>
+                </div>
             </div>
         </div>
 

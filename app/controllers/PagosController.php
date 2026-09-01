@@ -22,10 +22,10 @@ class PagosController extends Controller
             $pagoModel->create([
                 'jugador_id' => $_POST['jugador_id'] ?: null,
                 'equipo_id' => $_POST['equipo_id'] ?: null,
-                'concepto' => trim($_POST['concepto']),
+                'concepto_id' => $_POST['concepto_id'] ?: null,
                 'monto' => $_POST['monto'],
                 'tipo' => $_POST['tipo'] ?? 'ingreso',
-                'metodo_pago' => $_POST['metodo_pago'] ?? null,
+                'metodo_pago_id' => $_POST['metodo_pago_id'] ?: null,
                 'fecha' => $_POST['fecha'],
                 'estado' => $_POST['estado'] ?? 'pendiente',
             ]);
@@ -36,12 +36,16 @@ class PagosController extends Controller
 
         $jugadorModel = $this->model('Jugador');
         $equipoModel = $this->model('Equipo');
+        $catPagoModel = $this->model('CatPago');
+        $catMetodoPagoModel = $this->model('CatMetodoPago');
 
         $this->view('pagos/crear', [
             'titulo' => 'Nuevo pago',
             'activeMenu' => 'pagos',
             'jugadores' => $jugadorModel->all(),
             'equipos' => $equipoModel->all(),
+            'conceptos' => $catPagoModel->all('nombre ASC'),
+            'metodosPago' => $catMetodoPagoModel->all('nombre ASC'),
         ]);
     }
 
@@ -53,10 +57,10 @@ class PagosController extends Controller
             $pagoModel->update($id, [
                 'jugador_id' => $_POST['jugador_id'] ?: null,
                 'equipo_id' => $_POST['equipo_id'] ?: null,
-                'concepto' => trim($_POST['concepto']),
+                'concepto_id' => $_POST['concepto_id'] ?: null,
                 'monto' => $_POST['monto'],
                 'tipo' => $_POST['tipo'] ?? 'ingreso',
-                'metodo_pago' => $_POST['metodo_pago'] ?? null,
+                'metodo_pago_id' => $_POST['metodo_pago_id'] ?: null,
                 'fecha' => $_POST['fecha'],
                 'estado' => $_POST['estado'] ?? 'pendiente',
             ]);
@@ -67,6 +71,8 @@ class PagosController extends Controller
 
         $jugadorModel = $this->model('Jugador');
         $equipoModel = $this->model('Equipo');
+        $catPagoModel = $this->model('CatPago');
+        $catMetodoPagoModel = $this->model('CatMetodoPago');
 
         $this->view('pagos/editar', [
             'titulo' => 'Editar pago',
@@ -74,6 +80,8 @@ class PagosController extends Controller
             'pago' => $pagoModel->find($id),
             'jugadores' => $jugadorModel->all(),
             'equipos' => $equipoModel->all(),
+            'conceptos' => $catPagoModel->all('nombre ASC'),
+            'metodosPago' => $catMetodoPagoModel->all('nombre ASC'),
         ]);
     }
 

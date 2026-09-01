@@ -3,7 +3,10 @@
         <h1>Calendario de partidos</h1>
         <p>Próximos partidos y resultados registrados.</p>
     </div>
-    <a href="<?= BASE_URL ?>/partidos/crear" class="btn btn-primary">+ Nuevo partido</a>
+    <div class="d-flex gap-2">
+        <a href="<?= BASE_URL ?>/partidos/generar" class="btn btn-primary">🗓 Generar calendario</a>
+        <?php /* <a href="<?= BASE_URL ?>/partidos/crear" class="btn btn-primary">+ Nuevo partido</a> */ ?>
+    </div>
 </div>
 
 <div class="card">
@@ -12,8 +15,8 @@
             <thead>
                 <tr>
                     <th>Fecha</th>
-                    <th>Rival</th>
-                    <th>Tipo</th>
+                    <th>Local</th>
+                    <th>Visitante</th>
                     <th>Competencia</th>
                     <th>Marcador</th>
                     <th>Estado</th>
@@ -23,10 +26,15 @@
             <tbody>
                 <?php if (!empty($partidos)): ?>
                     <?php foreach ($partidos as $p): ?>
+                        <?php
+                            $equipoNombre = $p['equipo_nombre'] ?? 'Sin equipo';
+                            $local = $p['tipo'] === 'visitante' ? $p['rival'] : $equipoNombre;
+                            $visitante = $p['tipo'] === 'visitante' ? $equipoNombre : $p['rival'];
+                        ?>
                         <tr>
                             <td><?= date('d/m/Y', strtotime($p['fecha'])) ?> · <?= date('H:i', strtotime($p['hora'])) ?></td>
-                            <td><?= htmlspecialchars($p['rival']) ?></td>
-                            <td><?= ucfirst($p['tipo']) ?></td>
+                            <td><?= htmlspecialchars($local) ?></td>
+                            <td><?= htmlspecialchars($visitante) ?></td>
                             <td><?= htmlspecialchars($p['competencia'] ?? '-') ?> <?= htmlspecialchars($p['jornada'] ?? '') ?></td>
                             <td>
                                 <?= $p['goles_favor'] !== null ? $p['goles_favor'] . ' - ' . $p['goles_contra'] : '-' ?>

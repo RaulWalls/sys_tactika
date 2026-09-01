@@ -24,7 +24,7 @@
                         <tr>
                             <td><?= htmlspecialchars($u['nombre']) ?></td>
                             <td><?= htmlspecialchars($u['email']) ?></td>
-                            <td><?= ucfirst($u['rol']) ?></td>
+                            <td><?= ucfirst($u['rol_nombre'] ?? '-') ?></td>
                             <td><span class="badge-estado badge-<?= $u['estado'] ?>"><?= ucfirst($u['estado']) ?></span></td>
                             <td class="text-end">
                                 <a href="<?= BASE_URL ?>/usuarios/editar/<?= $u['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>

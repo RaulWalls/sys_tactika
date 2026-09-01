@@ -1,6 +1,6 @@
 <div class="welcome">
     <h1>Editar pago</h1>
-    <p><?= htmlspecialchars($pago['concepto']) ?></p>
+    <p><?= date('d/m/Y', strtotime($pago['fecha'])) ?> · $<?= number_format($pago['monto'], 2) ?></p>
 </div>
 
 <div class="card form-card">
@@ -9,7 +9,14 @@
         <div class="row g-3">
             <div class="col-md-12">
                 <label class="form-label">Concepto</label>
-                <input type="text" name="concepto" class="form-control" value="<?= htmlspecialchars($pago['concepto']) ?>" required>
+                <select name="concepto_id" class="form-select" data-fill-target="monto" required>
+                    <option value="">Selecciona un concepto</option>
+                    <?php foreach ($conceptos as $c): ?>
+                        <option value="<?= $c['id'] ?>" data-monto="<?= $c['monto'] !== null ? $c['monto'] : '' ?>" <?= (int) ($pago['concepto_id'] ?? 0) === (int) $c['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($c['nombre']) ?><?= $c['monto'] !== null ? ' ($' . number_format($c['monto'], 2) . ')' : '' ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="col-md-6">
@@ -38,7 +45,7 @@
 
             <div class="col-md-4">
                 <label class="form-label">Monto</label>
-                <input type="number" step="0.01" name="monto" class="form-control" value="<?= htmlspecialchars($pago['monto']) ?>" required>
+                <input type="number" step="0.01" name="monto" id="monto" class="form-control" value="<?= htmlspecialchars($pago['monto']) ?>" required>
             </div>
 
             <div class="col-md-4">
@@ -52,7 +59,14 @@
 
             <div class="col-md-4">
                 <label class="form-label">Método de pago</label>
-                <input type="text" name="metodo_pago" class="form-control" value="<?= htmlspecialchars($pago['metodo_pago'] ?? '') ?>">
+                <select name="metodo_pago_id" class="form-select">
+                    <option value="">Sin especificar</option>
+                    <?php foreach ($metodosPago as $m): ?>
+                        <option value="<?= $m['id'] ?>" <?= (int) ($pago['metodo_pago_id'] ?? 0) === (int) $m['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($m['nombre']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="col-md-6">

@@ -26,6 +26,11 @@ if (php_sapi_name() !== 'cli') {
 // ---- Rutas del sistema de archivos ----
 define('APP_PATH', dirname(__DIR__) . '/app');
 define('VIEWS_PATH', APP_PATH . '/views');
+define('PUBLIC_PATH', dirname(__DIR__) . '/public');
+define('UPLOADS_PATH', PUBLIC_PATH . '/uploads/equipos');
+define('UPLOADS_URL', BASE_URL . '/uploads/equipos');
+define('UPLOADS_PATH_JUGADORES', PUBLIC_PATH . '/uploads/jugadores');
+define('UPLOADS_URL_JUGADORES', BASE_URL . '/uploads/jugadores');
 
 // ---- Errores (desactivar display_errors en producción) ----
 error_reporting(E_ALL);

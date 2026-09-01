@@ -16,9 +16,14 @@
                 <span>Dashboard</span>
             </a>
 
+            <a href="<?= BASE_URL ?>/ligas" class="menu-item <?= ($activeMenu ?? '') === 'ligas' ? 'active' : '' ?>">
+                <span class="menu-icon">🏆</span>
+                <span>Ligas</span>
+            </a>
+
             <a href="<?= BASE_URL ?>/equipos" class="menu-item <?= ($activeMenu ?? '') === 'equipos' ? 'active' : '' ?>">
                 <span class="menu-icon">⚽</span>
-                <span>Mi equipo</span>
+                <span>Equipos</span>
             </a>
 
             <a href="<?= BASE_URL ?>/jugadores" class="menu-item <?= ($activeMenu ?? '') === 'jugadores' ? 'active' : '' ?>">
@@ -49,6 +54,13 @@
                 <span class="menu-icon">🧑‍💼</span>
                 <span>Usuarios</span>
             </a>
+
+            <?php /*
+            <a href="<?= BASE_URL ?>/staff" class="menu-item <?= ($activeMenu ?? '') === 'staff' ? 'active' : '' ?>">
+                <span class="menu-icon">🎽</span>
+                <span>Representantes y DT</span>
+            </a>
+            */ ?>
         </nav>
 
         <div class="sidebar-bottom">
@@ -57,7 +69,7 @@
                 <span>Configuración</span>
             </a>
 
-            <a href="#" class="menu-item">
+            <a href="<?= BASE_URL ?>/auth/logout" class="menu-item">
                 <span class="menu-icon">↪</span>
                 <span>Cerrar sesión</span>
             </a>
@@ -80,10 +92,10 @@
                 <div class="notification">🔔</div>
 
                 <div class="profile">
-                    <div class="avatar">JO</div>
+                    <div class="avatar"><?= htmlspecialchars(strtoupper(substr($_SESSION['usuario_nombre'] ?? '', 0, 2))) ?></div>
                     <div class="profile-info">
-                        <strong>Jorge Oliver</strong>
-                        <span>Administrador</span>
+                        <strong><?= htmlspecialchars($_SESSION['usuario_nombre'] ?? '') ?></strong>
+                        <span><?= htmlspecialchars(ucfirst($_SESSION['usuario_rol'] ?? '')) ?></span>
                     </div>
                 </div>
             </div>

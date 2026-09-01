@@ -4,9 +4,18 @@
 </div>
 
 <div class="card form-card">
-    <form method="post" action="<?= BASE_URL ?>/jugadores/crear">
+    <form method="post" action="<?= BASE_URL ?>/jugadores/crear" enctype="multipart/form-data">
 
         <div class="row g-3">
+            <div class="col-md-12">
+                <label class="form-label">Foto del jugador</label>
+                <div class="escudo-preview" id="foto-preview">
+                    <span class="escudo-placeholder-icon" id="foto-placeholder">👕</span>
+                    <img id="foto-preview-img" src="" alt="Foto" style="display:none;">
+                </div>
+                <input type="file" name="foto" accept="image/*" class="form-control" data-preview-img="foto-preview-img" data-preview-placeholder="foto-placeholder">
+            </div>
+
             <div class="col-md-6">
                 <label class="form-label">Nombre</label>
                 <input type="text" name="nombre" class="form-control" required>
@@ -14,7 +23,7 @@
 
             <div class="col-md-6">
                 <label class="form-label">Apellido</label>
-                <input type="text" name="apellido" class="form-control" required>
+                <input type="text" name="apellido" class="form-control" >
             </div>
 
             <div class="col-md-6">
@@ -29,7 +38,12 @@
 
             <div class="col-md-3">
                 <label class="form-label">Posición</label>
-                <input type="text" name="posicion" class="form-control" placeholder="Delantero, Portero...">
+                <select name="posicion_id" class="form-select">
+                    <option value="">Sin posición</option>
+                    <?php foreach ($posiciones as $p): ?>
+                        <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['nombre']) ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="col-md-3">
@@ -59,6 +73,13 @@
                     <option value="lesionado">Lesionado</option>
                     <option value="inactivo">Inactivo</option>
                 </select>
+            </div>
+
+            <div class="col-md-12 d-flex align-items-center">
+                <div class="form-check">
+                    <input type="checkbox" name="capitan" id="capitan" class="form-check-input" value="1">
+                    <label class="form-check-label" for="capitan">Capitán del equipo</label>
+                </div>
             </div>
         </div>
 

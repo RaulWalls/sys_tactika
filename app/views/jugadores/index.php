@@ -24,9 +24,24 @@
                     <?php foreach ($jugadores as $j): ?>
                         <tr>
                             <td><?= $j['numero'] ?? '-' ?></td>
-                            <td><?= htmlspecialchars($j['nombre'] . ' ' . $j['apellido']) ?></td>
+                            <td>
+                                <a href="<?= BASE_URL ?>/jugadores/detalle/<?= $j['id'] ?>" class="link-equipo">
+                                    <?= htmlspecialchars($j['nombre'] . ' ' . $j['apellido']) ?>
+                                </a>
+                                <?php if (!empty($j['capitan'])): ?>
+                                    <span class="badge-estado badge-capitan">Capitán</span>
+                                <?php endif; ?>
+                            </td>
                             <td><?= htmlspecialchars($j['equipo_nombre'] ?? 'Sin equipo') ?></td>
-                            <td><?= htmlspecialchars($j['posicion'] ?? '-') ?></td>
+                            <td>
+                                <?php if (!empty($j['posicion_nombre'])): ?>
+                                    <span class="badge-estado" style="background: <?= htmlspecialchars($j['posicion_tag']) ?>1a; color: <?= htmlspecialchars($j['posicion_tag']) ?>;">
+                                        <?= htmlspecialchars($j['posicion_nombre']) ?>
+                                    </span>
+                                <?php else: ?>
+                                    -
+                                <?php endif; ?>
+                            </td>
                             <td><span class="badge-estado badge-<?= $j['estado'] ?>"><?= ucfirst($j['estado']) ?></span></td>
                             <td class="text-end">
                                 <a href="<?= BASE_URL ?>/jugadores/editar/<?= $j['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>

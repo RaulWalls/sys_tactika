@@ -42,7 +42,7 @@
                     <?php foreach ($pagos as $p): ?>
                         <tr>
                             <td><?= date('d/m/Y', strtotime($p['fecha'])) ?></td>
-                            <td><?= htmlspecialchars($p['concepto']) ?></td>
+                            <td><?= htmlspecialchars($p['concepto_nombre'] ?? '-') ?></td>
                             <td><?= $p['jugador_nombre'] ? htmlspecialchars($p['jugador_nombre'] . ' ' . $p['jugador_apellido']) : '-' ?></td>
                             <td><?= ucfirst($p['tipo']) ?></td>
                             <td class="<?= $p['tipo'] === 'ingreso' ? 'positive' : 'negative' ?>">

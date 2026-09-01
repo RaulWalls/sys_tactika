@@ -41,7 +41,9 @@
             <a href="<?= BASE_URL ?>/partidos">Ver calendario →</a>
         </div>
 
-        <?php if (!empty($proximosPartidos)): ?>
+        <?php if ($totalEquipos <= 1 && $totalPartidos === 0): ?>
+            <p class="text-muted">Sin partidos pendientes.</p>
+        <?php elseif (!empty($proximosPartidos)): ?>
             <?php $siguiente = $proximosPartidos[0]; ?>
             <div class="match-card">
                 <div class="match-label">
@@ -50,14 +52,26 @@
 
                 <div class="match-info">
                     <div class="team">
-                        <div class="team-logo">🦖</div>
-                        <div class="team-name">Táctika FC</div>
+                        <div class="team-logo">
+                            <?php if (!empty($siguiente['equipo_escudo'])): ?>
+                                <img src="<?= BASE_URL . '/' . htmlspecialchars($siguiente['equipo_escudo']) ?>" alt="Escudo">
+                            <?php else: ?>
+                                ⚽
+                            <?php endif; ?>
+                        </div>
+                        <div class="team-name"><?= htmlspecialchars($siguiente['equipo_nombre'] ?? APP_NAME) ?></div>
                     </div>
 
                     <div class="vs">VS</div>
 
                     <div class="team">
-                        <div class="team-logo">⚡</div>
+                        <div class="team-logo">
+                            <?php if (!empty($siguiente['rival_escudo'])): ?>
+                                <img src="<?= BASE_URL . '/' . htmlspecialchars($siguiente['rival_escudo']) ?>" alt="Escudo">
+                            <?php else: ?>
+                                ⚡
+                            <?php endif; ?>
+                        </div>
                         <div class="team-name"><?= htmlspecialchars($siguiente['rival']) ?></div>
                     </div>
                 </div>
@@ -120,14 +134,27 @@
                 ?>
                 <div class="result">
                     <div class="result-team">
-                        <div class="mini-logo">🦖</div>
-                        Táctika FC
+                        <div class="mini-logo">
+                            <?php if (!empty($r['equipo_escudo'])): ?>
+                                <img src="<?= BASE_URL . '/' . htmlspecialchars($r['equipo_escudo']) ?>" alt="Escudo">
+                            <?php else: ?>
+                                ⚽
+                            <?php endif; ?>
+                        </div>
+                        <?= htmlspecialchars($r['equipo_nombre'] ?? APP_NAME) ?>
                         <strong><?= $r['goles_favor'] ?></strong>
                     </div>
 
                     <div class="score <?= $clase ?>"><?= $texto ?></div>
 
                     <div class="result-team">
+                        <div class="mini-logo">
+                            <?php if (!empty($r['rival_escudo'])): ?>
+                                <img src="<?= BASE_URL . '/' . htmlspecialchars($r['rival_escudo']) ?>" alt="Escudo">
+                            <?php else: ?>
+                                ⚡
+                            <?php endif; ?>
+                        </div>
                         <?= htmlspecialchars($r['rival']) ?>
                         <strong><?= $r['goles_contra'] ?></strong>
                     </div>

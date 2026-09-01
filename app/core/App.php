@@ -27,6 +27,14 @@ class App
         }
 
         require_once APP_PATH . '/controllers/' . $this->controllerName . '.php';
+
+        $controladoresPublicos = ['AuthController'];
+
+        if (!in_array($this->controllerName, $controladoresPublicos, true) && empty($_SESSION['usuario_id'])) {
+            header('Location: ' . BASE_URL . '/auth/login');
+            exit;
+        }
+
         $controller = new $this->controllerName();
 
         if (!empty($url[1]) && method_exists($controller, $url[1])) {

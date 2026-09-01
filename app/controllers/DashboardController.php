@@ -14,6 +14,7 @@ class DashboardController extends Controller
             'activeMenu' => 'dashboard',
             'totalJugadores' => count($jugadorModel->all()),
             'totalEquipos' => count($equipoModel->all()),
+            'totalPartidos' => $partidoModel->contarTodos(),
             'proximosPartidos' => $partidoModel->proximos(4),
             'ultimosResultados' => $partidoModel->ultimosResultados(4),
             'resumenFinanciero' => $pagoModel->resumen(),

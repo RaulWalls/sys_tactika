@@ -9,7 +9,7 @@ class UsuariosController extends Controller
         $this->view('usuarios/index', [
             'titulo' => 'Usuarios',
             'activeMenu' => 'usuarios',
-            'usuarios' => $usuarioModel->all(),
+            'usuarios' => $usuarioModel->conRol(),
         ]);
     }
 
@@ -22,7 +22,8 @@ class UsuariosController extends Controller
                 'nombre' => trim($_POST['nombre']),
                 'email' => trim($_POST['email']),
                 'password' => $_POST['password'],
-                'rol' => $_POST['rol'] ?? 'entrenador',
+                'rol_id' => (int) $_POST['rol_id'],
+                'liga_id' => $_POST['liga_id'] ?: null,
                 'estado' => $_POST['estado'] ?? 'activo',
             ]);
 
@@ -30,9 +31,14 @@ class UsuariosController extends Controller
             return;
         }
 
+        $ligaModel = $this->model('Liga');
+        $catRolModel = $this->model('CatRol');
+
         $this->view('usuarios/crear', [
             'titulo' => 'Nuevo usuario',
             'activeMenu' => 'usuarios',
+            'ligas' => $ligaModel->all('nombre ASC'),
+            'roles' => $catRolModel->all('nombre ASC'),
         ]);
     }
 
@@ -45,7 +51,8 @@ class UsuariosController extends Controller
                 'nombre' => trim($_POST['nombre']),
                 'email' => trim($_POST['email']),
                 'password' => $_POST['password'] ?? '',
-                'rol' => $_POST['rol'] ?? 'entrenador',
+                'rol_id' => (int) $_POST['rol_id'],
+                'liga_id' => $_POST['liga_id'] ?: null,
                 'estado' => $_POST['estado'] ?? 'activo',
             ]);
 
@@ -53,10 +60,15 @@ class UsuariosController extends Controller
             return;
         }
 
+        $ligaModel = $this->model('Liga');
+        $catRolModel = $this->model('CatRol');
+
         $this->view('usuarios/editar', [
             'titulo' => 'Editar usuario',
             'activeMenu' => 'usuarios',
             'usuario' => $usuarioModel->find($id),
+            'ligas' => $ligaModel->all('nombre ASC'),
+            'roles' => $catRolModel->all('nombre ASC'),
         ]);
     }
 

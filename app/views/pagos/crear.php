@@ -9,7 +9,14 @@
         <div class="row g-3">
             <div class="col-md-12">
                 <label class="form-label">Concepto</label>
-                <input type="text" name="concepto" class="form-control" placeholder="Mensualidad, renta de cancha..." required>
+                <select name="concepto_id" class="form-select" data-fill-target="monto" required>
+                    <option value="">Selecciona un concepto</option>
+                    <?php foreach ($conceptos as $c): ?>
+                        <option value="<?= $c['id'] ?>" data-monto="<?= $c['monto'] !== null ? $c['monto'] : '' ?>">
+                            <?= htmlspecialchars($c['nombre']) ?><?= $c['monto'] !== null ? ' ($' . number_format($c['monto'], 2) . ')' : '' ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="col-md-6">
@@ -34,7 +41,7 @@
 
             <div class="col-md-4">
                 <label class="form-label">Monto</label>
-                <input type="number" step="0.01" name="monto" class="form-control" required>
+                <input type="number" step="0.01" name="monto" id="monto" class="form-control" required>
             </div>
 
             <div class="col-md-4">
@@ -47,7 +54,12 @@
 
             <div class="col-md-4">
                 <label class="form-label">Método de pago</label>
-                <input type="text" name="metodo_pago" class="form-control" placeholder="Efectivo, transferencia...">
+                <select name="metodo_pago_id" class="form-select">
+                    <option value="">Sin especificar</option>
+                    <?php foreach ($metodosPago as $m): ?>
+                        <option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nombre']) ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="col-md-6">

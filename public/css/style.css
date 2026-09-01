@@ -409,8 +409,8 @@ a {
 }
 
 .team-logo {
-    width: 58px;
-    height: 58px;
+    width: 100px;
+    height: 100px;
 
     border-radius: 50%;
 
@@ -419,10 +419,17 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 
-    font-size: 25px;
+    font-size: 40px;
 
     margin: 0 auto 8px;
+}
+
+.team-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .team-name {
@@ -543,6 +550,13 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+}
+
+.mini-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .score {
@@ -706,8 +720,113 @@ a {
     color: var(--warning);
 }
 
+.badge-capitan {
+    background: #fdf1d6;
+    color: #a8790a;
+}
+
+.badge-positivo {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.badge-negativo {
+    background: var(--warning-bg);
+    color: var(--warning);
+}
+
+.badge-neutro {
+    background: #f0eef7;
+    color: var(--muted);
+}
+
+.stats-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 16px;
+    margin-top: 16px;
+}
+
+.stats-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+}
+
 .form-card {
     max-width: 700px;
+}
+
+.link-equipo {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.link-equipo:hover {
+    color: var(--primary);
+}
+
+.detalle-logo {
+    width: 64px;
+    height: 64px;
+    font-size: 26px;
+    margin: 0;
+    flex-shrink: 0;
+
+    background: var(--primary-light);
+}
+
+.detalle-label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.detalle-valor {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.detalle-sub {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+}
+
+.escudo-preview {
+    width: 300px;
+    height: 300px;
+    max-width: 100%;
+
+    background: var(--primary-light);
+
+    border: 2px dashed var(--border);
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    margin-bottom: 12px;
+}
+
+.escudo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.escudo-placeholder-icon {
+    font-size: 70px;
+    opacity: .4;
 }
 
 .btn-primary {
@@ -718,6 +837,144 @@ a {
 .btn-primary:hover {
     background: var(--primary-dark);
     border-color: var(--primary-dark);
+}
+
+
+/* =========================
+   AUTH (LOGIN / RECUPERAR)
+========================= */
+
+.auth-body {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    padding: 20px;
+}
+
+.auth-wrapper {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 700px;
+    min-height: 600px;
+
+    background: var(--surface);
+
+    border-radius: 16px;
+
+    padding: 40px 35px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .25);
+}
+
+.auth-card > .auth-logo,
+.auth-card > .auth-welcome,
+.auth-card > .alert,
+.auth-card > form {
+    width: 100%;
+    max-width: 380px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.auth-card > .alert {
+    margin-bottom: 15px;
+}
+
+@media (max-width: 750px) {
+    .auth-card {
+        min-height: 0;
+        padding: 35px 25px;
+    }
+}
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    margin-bottom: 25px;
+}
+
+.auth-logo .logo-icon {
+    width: 42px;
+    height: 42px;
+
+    background: var(--primary);
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+.auth-logo .logo-text {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+}
+
+.auth-logo .logo-text span {
+    color: var(--primary);
+}
+
+.auth-welcome {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.auth-welcome h1 {
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+
+.auth-welcome p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.auth-forgot {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.auth-forgot a {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.auth-submit {
+    padding: 10px;
+    font-weight: 600;
+}
+
+.auth-back {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.auth-back a {
+    font-size: 12px;
+    color: var(--muted);
 }
 
 

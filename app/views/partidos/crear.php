@@ -9,7 +9,7 @@
         <div class="row g-3">
             <div class="col-md-6">
                 <label class="form-label">Equipo</label>
-                <select name="equipo_id" class="form-select">
+                <select name="equipo_id" id="equipo_id" class="form-select" data-datalist-target="rivales-list" data-equipos="<?= htmlspecialchars(json_encode(array_map(fn ($e) => ['id' => (int) $e['id'], 'nombre' => $e['nombre']], $equipos)), ENT_QUOTES) ?>">
                     <option value="">Sin equipo</option>
                     <?php foreach ($equipos as $e): ?>
                         <option value="<?= $e['id'] ?>"><?= htmlspecialchars($e['nombre']) ?></option>
@@ -19,7 +19,13 @@
 
             <div class="col-md-6">
                 <label class="form-label">Rival</label>
-                <input type="text" name="rival" class="form-control" required>
+                <input type="text" name="rival" class="form-control" list="rivales-list" required>
+                <datalist id="rivales-list">
+                    <?php foreach ($equipos as $e): ?>
+                        <option value="<?= htmlspecialchars($e['nombre']) ?>"></option>
+                    <?php endforeach; ?>
+                </datalist>
+                <div class="form-text">Elige un equipo registrado o escribe el nombre de un rival externo.</div>
             </div>
 
             <div class="col-md-4">
@@ -46,8 +52,13 @@
             </div>
 
             <div class="col-md-3">
-                <label class="form-label">Competencia</label>
-                <input type="text" name="competencia" class="form-control" placeholder="Liga, Copa...">
+                <label class="form-label">Liga / Competencia</label>
+                <select name="liga_id" class="form-select">
+                    <option value="">Sin liga</option>
+                    <?php foreach ($ligas as $l): ?>
+                        <option value="<?= $l['id'] ?>"><?= htmlspecialchars($l['nombre']) ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="col-md-3">

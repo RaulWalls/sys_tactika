@@ -24,10 +24,10 @@
 
             <div class="col-md-3">
                 <label class="form-label">Rol</label>
-                <select name="rol" class="form-select">
-                    <option value="administrador">Administrador</option>
-                    <option value="entrenador">Entrenador</option>
-                    <option value="jugador">Jugador</option>
+                <select name="rol_id" class="form-select" required>
+                    <?php foreach ($roles as $r): ?>
+                        <option value="<?= $r['id'] ?>"><?= ucfirst($r['nombre']) ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
@@ -36,6 +36,16 @@
                 <select name="estado" class="form-select">
                     <option value="activo">Activo</option>
                     <option value="inactivo">Inactivo</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Liga / Competencia</label>
+                <select name="liga_id" class="form-select">
+                    <option value="">Sin asignar (acceso a todas, solo administrador)</option>
+                    <?php foreach ($ligas as $l): ?>
+                        <option value="<?= $l['id'] ?>"><?= htmlspecialchars($l['nombre']) ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
         </div>
