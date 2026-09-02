@@ -42,7 +42,11 @@
                     <?php foreach ($pagos as $p): ?>
                         <tr>
                             <td><?= date('d/m/Y', strtotime($p['fecha'])) ?></td>
-                            <td><?= htmlspecialchars($p['concepto_nombre'] ?? '-') ?></td>
+                            <td>
+                                <a href="#" class="link-equipo" data-bs-toggle="modal" data-bs-target="#pagoModal<?= $p['id'] ?>">
+                                    <?= htmlspecialchars($p['concepto_nombre'] ?? '-') ?>
+                                </a>
+                            </td>
                             <td><?= $p['jugador_nombre'] ? htmlspecialchars($p['jugador_nombre'] . ' ' . $p['jugador_apellido']) : '-' ?></td>
                             <td><?= ucfirst($p['tipo']) ?></td>
                             <td class="<?= $p['tipo'] === 'ingreso' ? 'positive' : 'negative' ?>">
@@ -64,3 +68,60 @@
         </table>
     </div>
 </div>
+
+<?php if (!empty($pagos)): ?>
+    <?php foreach ($pagos as $p): ?>
+        <div class="modal fade" id="pagoModal<?= $p['id'] ?>" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title mb-0"><?= htmlspecialchars($p['concepto_nombre'] ?? 'Pago') ?></h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body pago-modal-body">
+                        <div class="pago-modal-row">
+                            <span class="detalle-label">Monto</span>
+                            <div class="detalle-valor <?= $p['tipo'] === 'ingreso' ? 'positive' : 'negative' ?>">
+                                $<?= number_format($p['monto'], 2) ?> (<?= ucfirst($p['tipo']) ?>)
+                            </div>
+                        </div>
+
+                        <div class="pago-modal-row">
+                            <span class="detalle-label">Fecha</span>
+                            <div class="detalle-valor"><?= date('d M Y', strtotime($p['fecha'])) ?></div>
+                        </div>
+
+                        <div class="pago-modal-row">
+                            <span class="detalle-label">Estado</span>
+                            <div class="detalle-valor">
+                                <span class="badge-estado badge-<?= $p['estado'] ?>"><?= ucfirst($p['estado']) ?></span>
+                            </div>
+                        </div>
+
+                        <div class="pago-modal-row">
+                            <span class="detalle-label">Jugador</span>
+                            <div class="detalle-valor">
+                                <?= $p['jugador_nombre'] ? htmlspecialchars($p['jugador_nombre'] . ' ' . $p['jugador_apellido']) : '-' ?>
+                            </div>
+                        </div>
+
+                        <div class="pago-modal-row">
+                            <span class="detalle-label">Equipo</span>
+                            <div class="detalle-valor"><?= htmlspecialchars($p['equipo_nombre'] ?? '-') ?></div>
+                        </div>
+
+                        <div class="pago-modal-row">
+                            <span class="detalle-label">Método de pago</span>
+                            <div class="detalle-valor"><?= htmlspecialchars($p['metodo_nombre'] ?? '-') ?></div>
+                        </div>
+
+                        <div class="pago-modal-row">
+                            <span class="detalle-label">Observaciones</span>
+                            <div class="detalle-valor detalle-sub"><?= nl2br(htmlspecialchars($p['observaciones'] ?: 'Sin observaciones')) ?></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>

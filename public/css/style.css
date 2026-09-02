@@ -29,6 +29,60 @@
 
 
 /* =========================
+   TEMAS (solo colores de marca)
+========================= */
+
+body[data-theme="barcelona"] {
+    --primary: #8e0044;
+    --primary-dark: #294c97;
+    --primary-light: #f5e0e9;
+}
+
+body[data-theme="real_madrid"] {
+    --primary: #2c519e;
+    --primary-dark: #1c3568;
+    --primary-light: #eef2fb;
+}
+
+body[data-theme="manchester_city"] {
+    --primary: #172b5f;
+    --primary-dark: #0d1938;
+    --primary-light: #a2bfe7;
+}
+
+body[data-theme="psg"] {
+    --primary: #d02f36;
+    --primary-dark: #2c5195;
+    --primary-light: #fbe5e6;
+}
+body[data-theme="juventus"] {
+    --primary: #000000;
+    --primary-dark: #1c1c1c;
+    --primary-light: #f0f0f0;
+}
+body[data-theme="bayern_munich"] {
+    --primary: #d32f2f;
+    --primary-dark: #1c1c1c;
+    --primary-light: #fbe5e5;
+}
+body[data-theme="liverpool"] {
+    --primary: #c8102e;
+    --primary-dark: #1c1c1c;
+    --primary-light: #fbe5e5;
+}
+body[data-theme="chelsea"] {
+    --primary: #034694;
+    --primary-dark: #1c1c1c;
+    --primary-light: #e5f0fb;
+}
+body[data-theme="america"] {
+    --primary:  #f6303e;
+    --primary-dark: #0f1d41;
+    --primary-light:#f0eb9a;
+    /* --background: #0f1d41; */
+}
+
+/* =========================
    RESET
 ========================= */
 
@@ -245,6 +299,100 @@ a {
     right: 8px;
 }
 
+.theme-toggle-btn {
+    border: none;
+    font-size: 16px;
+}
+
+.theme-toggle-btn::after {
+    content: none;
+}
+
+.theme-switcher {
+    position: relative;
+}
+
+.theme-menu {
+    display: none;
+
+    position: absolute;
+    top: 48px;
+    right: 0;
+
+    width: 240px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow: 0 15px 35px rgba(0, 0, 0, .12);
+
+    padding: 8px;
+
+    z-index: 100;
+}
+
+.theme-menu.show {
+    display: block;
+}
+
+.theme-menu-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--muted);
+
+    padding: 6px 10px;
+}
+
+.theme-option {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background: none;
+    border: none;
+    border-radius: 8px;
+
+    padding: 9px 10px;
+
+    font-size: 13px;
+    color: var(--text);
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.theme-option:hover {
+    background: var(--background);
+}
+
+.theme-option.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.theme-swatch {
+    display: flex;
+    flex-shrink: 0;
+
+    width: 26px;
+    height: 18px;
+
+    border-radius: 4px;
+    overflow: hidden;
+
+    border: 1px solid rgba(0, 0, 0, .08);
+}
+
+.theme-swatch span {
+    flex: 1;
+}
+
 .profile {
     display: flex;
     align-items: center;
@@ -257,7 +405,7 @@ a {
 
     border-radius: 50%;
 
-    background: linear-gradient(135deg, #7253df, #a58cff);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
 
     color: white;
 
@@ -359,7 +507,7 @@ a {
 ========================= */
 
 .match-card {
-    background: linear-gradient(135deg, #2c2059, #5b3cc4);
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
 
     color: white;
 
@@ -692,6 +840,14 @@ a {
     font-size: 13px;
     vertical-align: middle;
 }
+.badge-tarjeta-roja{
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+.badge-tarjeta-amarilla{
+    background: var(--warning-bg);
+    color: var(--warning);
+}
 
 .badge-estado {
     font-size: 11px;
@@ -798,6 +954,16 @@ a {
     font-size: 12px;
     font-weight: 400;
     color: var(--muted);
+}
+
+.pago-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pago-modal-row .detalle-valor {
+    margin-top: 2px;
 }
 
 .escudo-preview {

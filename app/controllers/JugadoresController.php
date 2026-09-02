@@ -86,7 +86,9 @@ class JugadoresController extends Controller
     public function detalle(int $id): void
     {
         $jugadorModel = $this->model('Jugador');
+        $atributoModel = $this->model('JugadorAtributo');
         $estadisticaModel = $this->model('JugadorEstadistica');
+        $jugadorAmonestacionesModel = $this->model('JugadorAmonestaciones');
 
         $jugador = $jugadorModel->conDetalle($id);
 
@@ -99,23 +101,46 @@ class JugadoresController extends Controller
             'titulo' => $jugador['nombre'] . ' ' . $jugador['apellido'],
             'activeMenu' => 'jugadores',
             'jugador' => $jugador,
-            'estadisticas' => $estadisticaModel->porJugador($id),
+            'jugador_amonestado' => $jugadorAmonestacionesModel->porJugador($id),
+            'atributos' => $atributoModel->porJugador($id),
+            'rendimiento' => $estadisticaModel->porJugador($id),
         ]);
     }
 
-    public function estadisticas(int $id): void
+    public function atributos(int $id): void
     {
         $jugadorModel = $this->model('Jugador');
-        $estadisticaModel = $this->model('JugadorEstadistica');
 
-        $jugador = $jugadorModel->find($id);
-
-        if (!$jugador) {
+        if (!$jugadorModel->find($id)) {
             http_response_code(404);
             die('Jugador no encontrado');
         }
 
         if ($this->isPost()) {
+            $atributoModel = $this->model('JugadorAtributo');
+            $valores = [];
+
+            foreach ($_POST['valor'] ?? [] as $atributoId => $valor) {
+                $valores[(int) $atributoId] = (int) $valor;
+            }
+
+            $atributoModel->guardar($id, $valores);
+        }
+
+        $this->redirect('jugadores/detalle/' . $id);
+    }
+
+    public function rendimiento(int $id): void
+    {
+        $jugadorModel = $this->model('Jugador');
+
+        if (!$jugadorModel->find($id)) {
+            http_response_code(404);
+            die('Jugador no encontrado');
+        }
+
+        if ($this->isPost()) {
+            $estadisticaModel = $this->model('JugadorEstadistica');
             $valores = [];
 
             foreach ($_POST['valor'] ?? [] as $estadisticaId => $valor) {
@@ -123,17 +148,9 @@ class JugadoresController extends Controller
             }
 
             $estadisticaModel->guardar($id, $valores);
-
-            $this->redirect('jugadores/detalle/' . $id);
-            return;
         }
 
-        $this->view('jugadores/estadisticas', [
-            'titulo' => 'Estadísticas de ' . $jugador['nombre'],
-            'activeMenu' => 'jugadores',
-            'jugador' => $jugador,
-            'estadisticas' => $estadisticaModel->porJugador($id),
-        ]);
+        $this->redirect('jugadores/detalle/' . $id);
     }
 
     public function eliminar(int $id): void

@@ -81,4 +81,23 @@ document.addEventListener('DOMContentLoaded', function () {
         select.addEventListener('change', render);
         render();
     });
+
+    // Menú desplegable de temas (botón 🎨 junto a notificaciones)
+    const themeToggle = document.getElementById('themeToggle');
+    const themeMenu = document.getElementById('themeMenu');
+
+    if (themeToggle && themeMenu) {
+        themeToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            themeMenu.classList.toggle('show');
+        });
+
+        themeMenu.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+
+        document.addEventListener('click', function () {
+            themeMenu.classList.remove('show');
+        });
+    }
 });

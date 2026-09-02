@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     rol_id INT NOT NULL,
     liga_id INT NULL,
     estado ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
+    tema VARCHAR(20) NOT NULL DEFAULT 'default',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (rol_id) REFERENCES cat_roles(id),
     FOREIGN KEY (liga_id) REFERENCES ligas(id) ON DELETE SET NULL
@@ -172,6 +173,7 @@ CREATE TABLE IF NOT EXISTS pagos (
     metodo_pago_id INT NULL,
     fecha DATE NOT NULL,
     estado ENUM('pagado', 'pendiente') NOT NULL DEFAULT 'pendiente',
+    observaciones TEXT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (jugador_id) REFERENCES jugadores(id) ON DELETE SET NULL,
     FOREIGN KEY (equipo_id) REFERENCES equipos(id) ON DELETE SET NULL,

@@ -5,14 +5,14 @@ class JugadorEstadistica extends Model
     protected string $table = 'jugador_estadisticas';
 
     /**
-     * Todas las estadísticas del catálogo para un jugador, con su valor
-     * actual (0 si aún no se ha registrado).
+     * Todas las estadísticas de rendimiento del catálogo para un jugador,
+     * con su valor actual (0 si aún no se ha registrado).
      */
     public function porJugador(int $jugadorId): array
     {
         $sql = "SELECT c.id AS estadistica_id, c.nombre, c.abreviatura,
                        COALESCE(je.valor, 0) AS valor
-                FROM cat_estadisticas c
+                FROM cat_estadisticas_rendimiento c
                 LEFT JOIN jugador_estadisticas je
                     ON je.estadistica_id = c.id AND je.jugador_id = :jugador_id
                 ORDER BY c.id ASC";
@@ -25,7 +25,7 @@ class JugadorEstadistica extends Model
 
     /**
      * Guarda (crea o actualiza) los valores de un jugador para cada
-     * estadística: ['estadistica_id' => valor].
+     * estadística de rendimiento: ['estadistica_id' => valor].
      */
     public function guardar(int $jugadorId, array $valores): void
     {

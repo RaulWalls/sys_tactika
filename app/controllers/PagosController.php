@@ -28,6 +28,7 @@ class PagosController extends Controller
                 'metodo_pago_id' => $_POST['metodo_pago_id'] ?: null,
                 'fecha' => $_POST['fecha'],
                 'estado' => $_POST['estado'] ?? 'pendiente',
+                'observaciones' => $_POST['observaciones'] ?? null,
             ]);
 
             $this->redirect('pagos');
@@ -46,6 +47,7 @@ class PagosController extends Controller
             'equipos' => $equipoModel->all(),
             'conceptos' => $catPagoModel->all('nombre ASC'),
             'metodosPago' => $catMetodoPagoModel->all('nombre ASC'),
+            'observaciones' => $_POST['observaciones'] ?? null,
         ]);
     }
 
@@ -63,6 +65,7 @@ class PagosController extends Controller
                 'metodo_pago_id' => $_POST['metodo_pago_id'] ?: null,
                 'fecha' => $_POST['fecha'],
                 'estado' => $_POST['estado'] ?? 'pendiente',
+                'observaciones' => $_POST['observaciones'] ?? null,
             ]);
 
             $this->redirect('pagos');
@@ -82,6 +85,7 @@ class PagosController extends Controller
             'equipos' => $equipoModel->all(),
             'conceptos' => $catPagoModel->all('nombre ASC'),
             'metodosPago' => $catMetodoPagoModel->all('nombre ASC'),
+            'observaciones' => $_POST['observaciones'] ?? null,
         ]);
     }
 

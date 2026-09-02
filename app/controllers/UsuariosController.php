@@ -78,4 +78,29 @@ class UsuariosController extends Controller
         $usuarioModel->delete($id);
         $this->redirect('usuarios');
     }
+
+    public function tema(): void
+    {
+        $temasValidos = [
+            'default', 'barcelona', 'real_madrid', 'manchester_city', 'psg',
+            'juventus', 'bayern_munich', 'liverpool', 'chelsea', 'america',
+        ];
+        $tema = $_POST['tema'] ?? 'default';
+
+        if (!in_array($tema, $temasValidos, true)) {
+            $tema = 'default';
+        }
+
+        if (!empty($_SESSION['usuario_id'])) {
+            $usuarioModel = $this->model('Usuario');
+            $usuarioModel->update((int) $_SESSION['usuario_id'], ['tema' => $tema]);
+            $_SESSION['usuario_tema'] = $tema;
+        }
+
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $destino = (parse_url($referer, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $referer : (BASE_URL . '/dashboard');
+
+        header('Location: ' . $destino);
+        exit;
+    }
 }

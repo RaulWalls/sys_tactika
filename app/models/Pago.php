@@ -25,10 +25,12 @@ class Pago extends Model
     {
         $sql = "SELECT p.*,
                        j.nombre AS jugador_nombre, j.apellido AS jugador_apellido,
+                       e.nombre AS equipo_nombre,
                        c.nombre AS concepto_nombre,
                        m.nombre AS metodo_nombre
                 FROM pagos p
                 LEFT JOIN jugadores j ON j.id = p.jugador_id
+                LEFT JOIN equipos e ON e.id = p.equipo_id
                 LEFT JOIN cat_pagos c ON c.id = p.concepto_id
                 LEFT JOIN cat_metodo_pagos m ON m.id = p.metodo_pago_id
                 ORDER BY p.fecha DESC";

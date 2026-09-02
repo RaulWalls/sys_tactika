@@ -82,6 +82,11 @@
                     <?php endforeach; ?>
                 </select>
             </div>
+
+            <div class="col-md-12">
+                <label class="form-label">Observaciones</label>
+                <textarea name="observaciones" class="form-control" rows="3"><?= htmlspecialchars($pago['observaciones'] ?? '') ?></textarea>
+            </div>
         </div>
 
         <div class="mt-4 d-flex gap-2">

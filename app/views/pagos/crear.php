@@ -74,6 +74,10 @@
                     <option value="pagado">Pagado</option>
                 </select>
             </div>
+            <div class="col-md-12">
+                <label class="form-label">Observaciones</label>
+                <textarea name="observaciones" class="form-control" rows="3"></textarea>
+            </div>
         </div>
 
         <div class="mt-4 d-flex gap-2">
