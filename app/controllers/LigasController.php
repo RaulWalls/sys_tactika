@@ -4,6 +4,8 @@ class LigasController extends Controller
 {
     public function index(): void
     {
+        $this->exigirPermiso('ver');
+
         $ligaModel = $this->model('Liga');
 
         $this->view('ligas/index', [
@@ -15,6 +17,8 @@ class LigasController extends Controller
 
     public function crear(): void
     {
+        $this->exigirPermiso('crear');
+
         if ($this->isPost()) {
             $error = $this->validarTotalEquipos($_POST['total_equipos'] ?? '');
 
@@ -51,6 +55,8 @@ class LigasController extends Controller
 
     public function editar(int $id): void
     {
+        $this->exigirPermiso('editar');
+
         $ligaModel = $this->model('Liga');
 
         if ($this->isPost()) {
@@ -101,6 +107,8 @@ class LigasController extends Controller
 
     public function eliminar(int $id): void
     {
+        $this->exigirPermiso('eliminar');
+
         $ligaModel = $this->model('Liga');
         $ligaModel->delete($id);
         $this->redirect('ligas');

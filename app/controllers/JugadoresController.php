@@ -4,22 +4,25 @@ class JugadoresController extends Controller
 {
     public function index(): void
     {
+        $this->exigirPermiso('ver');
+
         $jugadorModel = $this->model('Jugador');
 
         $this->view('jugadores/index', [
             'titulo' => 'Jugadores',
             'activeMenu' => 'jugadores',
-            'jugadores' => $jugadorModel->conEquipo(),
+            'jugadores' => $jugadorModel->conEquipo($this->misEquiposIds()),
         ]);
     }
 
     public function crear(): void
     {
+        $this->exigirPermiso('crear');
+
         if ($this->isPost()) {
             $jugadorModel = $this->model('Jugador');
 
-            $jugadorModel->create([
-                'equipo_id' => $_POST['equipo_id'] ?: null,
+            $id = $jugadorModel->create([
                 'nombre' => trim($_POST['nombre']),
                 'apellido' => trim($_POST['apellido']),
                 'posicion_id' => $_POST['posicion_id'] ?: null,
@@ -32,6 +35,8 @@ class JugadoresController extends Controller
                 'foto' => $this->subirFoto($_FILES['foto'] ?? null),
             ]);
 
+            $jugadorModel->guardarEquipos($id, $_POST['equipos'] ?? []);
+
             $this->redirect('jugadores');
             return;
         }
@@ -42,32 +47,48 @@ class JugadoresController extends Controller
         $this->view('jugadores/crear', [
             'titulo' => 'Nuevo jugador',
             'activeMenu' => 'jugadores',
-            'equipos' => $equipoModel->all(),
+            'equipos' => $equipoModel->conLiga($this->misEquiposIds()),
             'posiciones' => $posicionModel->all('nombre ASC'),
         ]);
     }
 
     public function editar(int $id): void
     {
+        $this->exigirPermiso('editar');
+        $this->verificarAccesoJugador($id);
+
+        $esRolJugador = ($_SESSION['usuario_rol'] ?? '') === 'jugador';
+
         $jugadorModel = $this->model('Jugador');
-        $jugador = $jugadorModel->find($id);
+        $jugador = $jugadorModel->conDetalle($id);
 
         if ($this->isPost()) {
-            $jugadorModel->update($id, [
-                'equipo_id' => $_POST['equipo_id'] ?: null,
+            // Un jugador solo puede modificar sus datos generales; el
+            // resto (posición, número, estado, capitán, foto, equipos)
+            // solo lo activa un administrador o entrenador.
+            $datos = [
                 'nombre' => trim($_POST['nombre']),
                 'apellido' => trim($_POST['apellido']),
-                'posicion_id' => $_POST['posicion_id'] ?: null,
-                'numero' => $_POST['numero'] !== '' ? $_POST['numero'] : null,
                 'fecha_nacimiento' => $_POST['fecha_nacimiento'] ?: null,
                 'telefono' => $_POST['telefono'] ?? null,
                 'email' => $_POST['email'] ?? null,
-                'estado' => $_POST['estado'] ?? 'activo',
-                'capitan' => isset($_POST['capitan']) ? 1 : 0,
-                'foto' => $this->subirFoto($_FILES['foto'] ?? null, $jugador['foto'] ?? null),
-            ]);
+            ];
 
-            $this->redirect('jugadores');
+            if (!$esRolJugador) {
+                $datos['posicion_id'] = $_POST['posicion_id'] ?: null;
+                $datos['numero'] = $_POST['numero'] !== '' ? $_POST['numero'] : null;
+                $datos['estado'] = $_POST['estado'] ?? 'activo';
+                $datos['capitan'] = isset($_POST['capitan']) ? 1 : 0;
+                $datos['foto'] = $this->subirFoto($_FILES['foto'] ?? null, $jugador['foto'] ?? null);
+            }
+
+            $jugadorModel->update($id, $datos);
+
+            if (!$esRolJugador) {
+                $jugadorModel->guardarEquipos($id, $_POST['equipos'] ?? []);
+            }
+
+            $this->redirect($esRolJugador ? 'jugadores/detalle/' . $id : 'jugadores');
             return;
         }
 
@@ -78,13 +99,17 @@ class JugadoresController extends Controller
             'titulo' => 'Editar jugador',
             'activeMenu' => 'jugadores',
             'jugador' => $jugador,
-            'equipos' => $equipoModel->all(),
+            'equipos' => $equipoModel->conLiga($this->misEquiposIds()),
             'posiciones' => $posicionModel->all('nombre ASC'),
+            'esRolJugador' => $esRolJugador,
         ]);
     }
 
     public function detalle(int $id): void
     {
+        $this->exigirPermiso('ver');
+        $this->verificarAccesoJugador($id);
+
         $jugadorModel = $this->model('Jugador');
         $atributoModel = $this->model('JugadorAtributo');
         $estadisticaModel = $this->model('JugadorEstadistica');
@@ -109,6 +134,10 @@ class JugadoresController extends Controller
 
     public function atributos(int $id): void
     {
+        $this->exigirPermiso('editar');
+        $this->verificarAccesoJugador($id);
+        $this->bloquearRolJugador();
+
         $jugadorModel = $this->model('Jugador');
 
         if (!$jugadorModel->find($id)) {
@@ -132,6 +161,10 @@ class JugadoresController extends Controller
 
     public function rendimiento(int $id): void
     {
+        $this->exigirPermiso('editar');
+        $this->verificarAccesoJugador($id);
+        $this->bloquearRolJugador();
+
         $jugadorModel = $this->model('Jugador');
 
         if (!$jugadorModel->find($id)) {
@@ -155,6 +188,9 @@ class JugadoresController extends Controller
 
     public function eliminar(int $id): void
     {
+        $this->exigirPermiso('eliminar');
+        $this->verificarAccesoJugador($id);
+
         $jugadorModel = $this->model('Jugador');
         $jugador = $jugadorModel->find($id);
 
@@ -164,6 +200,54 @@ class JugadoresController extends Controller
 
         $jugadorModel->delete($id);
         $this->redirect('jugadores');
+    }
+
+    /**
+     * Bloquea el acceso a un jugador que no corresponda al usuario en sesión:
+     * - jugador: solo su propio perfil.
+     * - entrenador: solo jugadores de alguno de sus equipos.
+     * - administrador: sin restricción.
+     */
+    private function verificarAccesoJugador(int $id): void
+    {
+        $rol = $_SESSION['usuario_rol'] ?? '';
+
+        if ($rol === 'jugador') {
+            $miJugadorId = (int) ($_SESSION['usuario_jugador_id'] ?? 0);
+
+            if ($miJugadorId !== $id) {
+                $this->flashError('No puedes ver el detalle de otro jugador.');
+                $this->redirect($miJugadorId > 0 ? 'jugadores/detalle/' . $miJugadorId : 'dashboard');
+            }
+
+            return;
+        }
+
+        $misEquipos = $this->misEquiposIds();
+
+        if ($misEquipos === null) {
+            return;
+        }
+
+        $jugadorModel = $this->model('Jugador');
+        $equiposDelJugador = array_column($jugadorModel->equiposDe($id), 'id');
+
+        if (!array_intersect($misEquipos, $equiposDelJugador)) {
+            http_response_code(403);
+            die('No tienes acceso a este jugador.');
+        }
+    }
+
+    /**
+     * Atributos y estadísticas de rendimiento los captura siempre un
+     * entrenador o administrador, nunca el propio jugador.
+     */
+    private function bloquearRolJugador(): void
+    {
+        if (($_SESSION['usuario_rol'] ?? '') === 'jugador') {
+            http_response_code(403);
+            die('Solo un administrador o entrenador puede modificar estos datos.');
+        }
     }
 
     private function subirFoto(?array $file, ?string $actual = null): ?string

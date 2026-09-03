@@ -3,7 +3,9 @@
         <h1>Ligas y competencias</h1>
         <p>Administra las ligas y sus equipos y jugadores asociados.</p>
     </div>
-    <a href="<?= BASE_URL ?>/ligas/crear" class="btn btn-primary">+ Nueva liga</a>
+    <?php if ($this->tienePermiso('crear')): ?>
+        <a href="<?= BASE_URL ?>/ligas/crear" class="btn btn-primary">+ Nueva liga</a>
+    <?php endif; ?>
 </div>
 
 <div class="card">
@@ -27,8 +29,12 @@
                             <td><?= (int) $l['dias_partido_semana'] ?></td>
                             <td><span class="badge-estado badge-<?= $l['estado'] === 'activa' ? 'activo' : 'inactivo' ?>"><?= ucfirst($l['estado']) ?></span></td>
                             <td class="text-end">
-                                <a href="<?= BASE_URL ?>/ligas/editar/<?= $l['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>
-                                <a href="<?= BASE_URL ?>/ligas/eliminar/<?= $l['id'] ?>" class="btn btn-sm btn-outline-danger" data-confirm="¿Eliminar esta liga?">Eliminar</a>
+                                <?php if ($this->tienePermiso('editar')): ?>
+                                    <a href="<?= BASE_URL ?>/ligas/editar/<?= $l['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <?php endif; ?>
+                                <?php if ($this->tienePermiso('eliminar')): ?>
+                                    <a href="<?= BASE_URL ?>/ligas/eliminar/<?= $l['id'] ?>" class="btn btn-sm btn-outline-danger" data-confirm="¿Eliminar esta liga?">Eliminar</a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

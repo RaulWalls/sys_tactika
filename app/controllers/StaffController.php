@@ -4,6 +4,8 @@ class StaffController extends Controller
 {
     public function index(): void
     {
+        $this->exigirPermiso('ver');
+
         $staffModel = $this->model('Staff');
 
         $this->view('staff/index', [
@@ -15,6 +17,8 @@ class StaffController extends Controller
 
     public function crear(): void
     {
+        $this->exigirPermiso('crear');
+
         if ($this->isPost()) {
             $staffModel = $this->model('Staff');
 
@@ -36,6 +40,8 @@ class StaffController extends Controller
 
     public function editar(int $id): void
     {
+        $this->exigirPermiso('editar');
+
         $staffModel = $this->model('Staff');
 
         if ($this->isPost()) {
@@ -58,6 +64,8 @@ class StaffController extends Controller
 
     public function eliminar(int $id): void
     {
+        $this->exigirPermiso('eliminar');
+
         $staffModel = $this->model('Staff');
         $staffModel->delete($id);
         $this->redirect('staff');

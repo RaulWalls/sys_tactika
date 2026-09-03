@@ -4,6 +4,8 @@ class PartidosController extends Controller
 {
     public function index(): void
     {
+        $this->exigirPermiso('ver');
+
         $partidoModel = $this->model('Partido');
 
         $this->view('partidos/index', [
@@ -15,6 +17,8 @@ class PartidosController extends Controller
 
     public function crear(): void
     {
+        $this->exigirPermiso('crear');
+
         if ($this->isPost()) {
             $partidoModel = $this->model('Partido');
 
@@ -48,6 +52,8 @@ class PartidosController extends Controller
 
     public function editar(int $id): void
     {
+        $this->exigirPermiso('editar');
+
         $partidoModel = $this->model('Partido');
 
         if ($this->isPost()) {
@@ -95,6 +101,8 @@ class PartidosController extends Controller
 
     public function eliminar(int $id): void
     {
+        $this->exigirPermiso('eliminar');
+
         $partidoModel = $this->model('Partido');
         $partidoModel->delete($id);
         $this->redirect('partidos');
@@ -102,6 +110,8 @@ class PartidosController extends Controller
 
     public function generar(): void
     {
+        $this->exigirPermiso('crear');
+
         $ligaModel = $this->model('Liga');
         $ligas = $ligaModel->all('nombre ASC');
 

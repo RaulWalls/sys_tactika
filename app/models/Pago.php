@@ -4,15 +4,32 @@ class Pago extends Model
 {
     protected string $table = 'pagos';
 
-    public function resumen(): array
+    /**
+     * Resumen de ingresos/gastos/balance. Si se pasa $equipoIds (acotado
+     * por rol), solo suma pagos de esos equipos; null = sin restricción.
+     */
+    public function resumen(?array $equipoIds = null): array
     {
-        $ingresos = (float) $this->db->query(
-            "SELECT COALESCE(SUM(monto), 0) AS total FROM pagos WHERE tipo = 'ingreso'"
-        )->fetch()['total'];
+        if ($equipoIds !== null && empty($equipoIds)) {
+            return ['ingresos' => 0.0, 'gastos' => 0.0, 'balance' => 0.0];
+        }
 
-        $gastos = (float) $this->db->query(
-            "SELECT COALESCE(SUM(monto), 0) AS total FROM pagos WHERE tipo = 'gasto'"
-        )->fetch()['total'];
+        $filtro = '';
+        $params = [];
+
+        if ($equipoIds !== null) {
+            $in = implode(',', array_fill(0, count($equipoIds), '?'));
+            $filtro = " AND equipo_id IN ({$in})";
+            $params = array_values($equipoIds);
+        }
+
+        $stmtIngresos = $this->db->prepare("SELECT COALESCE(SUM(monto), 0) AS total FROM pagos WHERE tipo = 'ingreso'{$filtro}");
+        $stmtIngresos->execute($params);
+        $ingresos = (float) $stmtIngresos->fetch()['total'];
+
+        $stmtGastos = $this->db->prepare("SELECT COALESCE(SUM(monto), 0) AS total FROM pagos WHERE tipo = 'gasto'{$filtro}");
+        $stmtGastos->execute($params);
+        $gastos = (float) $stmtGastos->fetch()['total'];
 
         return [
             'ingresos' => $ingresos,

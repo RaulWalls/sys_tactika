@@ -16,7 +16,13 @@
                 <?php endif; ?>
             </h1>
             <p>
-                <?= htmlspecialchars($jugador['equipo_nombre'] ?? 'Sin equipo') ?>
+                <?php if (!empty($jugador['equipos'])): ?>
+                    <?php foreach ($jugador['equipos'] as $i => $eq): ?>
+                        <?= $i > 0 ? ', ' : '' ?><a href="<?= BASE_URL ?>/equipos/detalle/<?= $eq['id'] ?>" class="link-equipo"><?= htmlspecialchars($eq['nombre']) ?></a>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    Sin equipo
+                <?php endif; ?>
                 <?php if (!empty($jugador['posicion_nombre'])): ?>
                     ·
                     <span class="badge-estado" style="background: <?= htmlspecialchars($jugador['posicion_tag']) ?>1a; color: <?= htmlspecialchars($jugador['posicion_tag']) ?>;">
@@ -28,7 +34,9 @@
     </div>
 
     <div class="d-flex gap-2">
-        <a href="<?= BASE_URL ?>/jugadores/editar/<?= $jugador['id'] ?>" class="btn btn-outline-secondary">Editar</a>
+        <?php if ($this->tienePermiso('editar')): ?>
+            <a href="<?= BASE_URL ?>/jugadores/editar/<?= $jugador['id'] ?>" class="btn btn-outline-secondary">Editar</a>
+        <?php endif; ?>
         <a href="<?= BASE_URL ?>/jugadores" class="btn btn-outline-secondary">← Volver</a>
     </div>
 </div>
@@ -79,7 +87,9 @@
     <div class="card">
         <div class="section-header">
             <h2>Estadísticas de rendimiento</h2>
-            <a href="#" data-bs-toggle="modal" data-bs-target="#modalRendimiento">Editar →</a>
+            <?php if ($this->tienePermiso('editar') && ($_SESSION['usuario_rol'] ?? '') !== 'jugador'): ?>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modalRendimiento">Editar →</a>
+            <?php endif; ?>
         </div>
 
         <div class="row g-3">
@@ -110,7 +120,9 @@
     <div class="card">
         <div class="section-header">
             <h2>Atributos</h2>
-            <a href="#" data-bs-toggle="modal" data-bs-target="#modalAtributos">Editar →</a>
+            <?php if ($this->tienePermiso('editar') && ($_SESSION['usuario_rol'] ?? '') !== 'jugador'): ?>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modalAtributos">Editar →</a>
+            <?php endif; ?>
         </div>
 
         <canvas id="statsRadar" height="220"></canvas>

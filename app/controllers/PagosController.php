@@ -4,6 +4,8 @@ class PagosController extends Controller
 {
     public function index(): void
     {
+        $this->exigirPermiso('ver');
+
         $pagoModel = $this->model('Pago');
 
         $this->view('pagos/index', [
@@ -16,6 +18,8 @@ class PagosController extends Controller
 
     public function crear(): void
     {
+        $this->exigirPermiso('crear');
+
         if ($this->isPost()) {
             $pagoModel = $this->model('Pago');
 
@@ -53,6 +57,8 @@ class PagosController extends Controller
 
     public function editar(int $id): void
     {
+        $this->exigirPermiso('editar');
+
         $pagoModel = $this->model('Pago');
 
         if ($this->isPost()) {
@@ -91,6 +97,8 @@ class PagosController extends Controller
 
     public function eliminar(int $id): void
     {
+        $this->exigirPermiso('eliminar');
+
         $pagoModel = $this->model('Pago');
         $pagoModel->delete($id);
         $this->redirect('pagos');

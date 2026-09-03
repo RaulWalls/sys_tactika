@@ -4,14 +4,34 @@ class Equipo extends Model
 {
     protected string $table = 'equipos';
 
-    public function conLiga(): array
+    /**
+     * Lista de equipos. Si se pasa $ids (acotado por rol), solo incluye
+     * esos equipos; null significa "sin restricción" (administrador).
+     */
+    public function conLiga(?array $ids = null): array
     {
+        if ($ids !== null && empty($ids)) {
+            return [];
+        }
+
         $sql = "SELECT e.*, l.nombre AS liga_nombre
                 FROM equipos e
-                LEFT JOIN ligas l ON l.id = e.liga_id
-                ORDER BY e.id DESC";
+                LEFT JOIN ligas l ON l.id = e.liga_id";
 
-        return $this->db->query($sql)->fetchAll();
+        $params = [];
+
+        if ($ids !== null) {
+            $in = implode(',', array_fill(0, count($ids), '?'));
+            $sql .= " WHERE e.id IN ({$in})";
+            $params = array_values($ids);
+        }
+
+        $sql .= " ORDER BY e.id DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll();
     }
 
     public function porLiga(int $ligaId): array

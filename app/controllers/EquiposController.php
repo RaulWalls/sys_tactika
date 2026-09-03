@@ -4,17 +4,21 @@ class EquiposController extends Controller
 {
     public function index(): void
     {
+        $this->exigirPermiso('ver');
+
         $equipoModel = $this->model('Equipo');
 
         $this->view('equipos/index', [
             'titulo' => 'Equipos',
             'activeMenu' => 'equipos',
-            'equipos' => $equipoModel->conLiga(),
+            'equipos' => $equipoModel->conLiga($this->misEquiposIds()),
         ]);
     }
 
     public function crear(): void
     {
+        $this->exigirPermiso('crear');
+
         if ($this->isPost()) {
             $equipoModel = $this->model('Equipo');
 
@@ -47,6 +51,9 @@ class EquiposController extends Controller
 
     public function editar(int $id): void
     {
+        $this->exigirPermiso('editar');
+        $this->verificarAccesoEquipo($id);
+
         $equipoModel = $this->model('Equipo');
         $equipo = $equipoModel->find($id);
 
@@ -81,6 +88,9 @@ class EquiposController extends Controller
 
     public function detalle(int $id): void
     {
+        $this->exigirPermiso('ver');
+        $this->verificarAccesoEquipo($id);
+
         $equipoModel = $this->model('Equipo');
         $jugadorModel = $this->model('Jugador');
 
@@ -101,6 +111,9 @@ class EquiposController extends Controller
 
     public function eliminar(int $id): void
     {
+        $this->exigirPermiso('eliminar');
+        $this->verificarAccesoEquipo($id);
+
         $equipoModel = $this->model('Equipo');
         $equipo = $equipoModel->find($id);
 
@@ -110,6 +123,16 @@ class EquiposController extends Controller
 
         $equipoModel->delete($id);
         $this->redirect('equipos');
+    }
+
+    private function verificarAccesoEquipo(int $id): void
+    {
+        $ids = $this->misEquiposIds();
+
+        if ($ids !== null && !in_array($id, $ids, true)) {
+            http_response_code(403);
+            die('No tienes acceso a este equipo.');
+        }
     }
 
     private function subirEscudo(?array $file, ?string $actual = null): ?string

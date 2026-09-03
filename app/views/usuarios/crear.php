@@ -48,6 +48,33 @@
                     <?php endforeach; ?>
                 </select>
             </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Jugador vinculado (rol jugador)</label>
+                <select name="jugador_id" class="form-select">
+                    <option value="">Sin vincular</option>
+                    <?php foreach ($jugadores as $j): ?>
+                        <option value="<?= $j['id'] ?>"><?= htmlspecialchars($j['nombre'] . ' ' . $j['apellido']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="form-text">Solo aplica si el rol es "Jugador": conecta esta cuenta con su perfil de jugador.</div>
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label">Equipos asignados (rol entrenador)</label>
+                <div class="equipos-checklist">
+                    <?php foreach ($equipos as $e): ?>
+                        <div class="form-check">
+                            <input type="checkbox" name="equipos[]" id="usuario-equipo-<?= $e['id'] ?>" class="form-check-input" value="<?= $e['id'] ?>">
+                            <label class="form-check-label" for="usuario-equipo-<?= $e['id'] ?>"><?= htmlspecialchars($e['nombre']) ?></label>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php if (empty($equipos)): ?>
+                        <p class="text-muted small mb-0">No hay equipos disponibles.</p>
+                    <?php endif; ?>
+                </div>
+                <div class="form-text">Solo aplica si el rol es "Entrenador": un entrenador puede tener varios equipos.</div>
+            </div>
         </div>
 
         <div class="mt-4 d-flex gap-2">

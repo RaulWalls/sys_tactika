@@ -82,6 +82,40 @@ body[data-theme="america"] {
     /* --background: #0f1d41; */
 }
 
+
+/* =========================
+   MODO OSCURO (solo tono neutro; los colores de marca
+   del tema activo no cambian)
+========================= */
+
+body[data-modo="oscuro"] {
+    --background: #14121f;
+    --surface: #1e1b2e;
+
+    --text: #ede9f7;
+    --muted: #9691ab;
+
+    --border: #322d47;
+
+    --success-bg: #163a2c;
+    --danger-bg: #3a1f1f;
+    --warning-bg: #3a301a;
+}
+
+body[data-modo="oscuro"] .sidebar {
+    background: #0b0a13;
+}
+
+body[data-modo="oscuro"] .notification {
+    background: #262138;
+}
+
+body[data-modo="oscuro"] .finance-item,
+body[data-modo="oscuro"] .mini-logo,
+body[data-modo="oscuro"] .badge-neutro {
+    background: #262138;
+}
+
 /* =========================
    RESET
 ========================= */
@@ -915,6 +949,21 @@ a {
 
 .form-card {
     max-width: 700px;
+}
+
+.equipos-checklist {
+    max-height: 180px;
+    overflow-y: auto;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    padding: 10px 12px;
+}
+
+.equipos-checklist .form-check {
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .link-equipo {

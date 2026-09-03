@@ -16,55 +16,69 @@
                 <span>Dashboard</span>
             </a>
 
-            <a href="<?= BASE_URL ?>/ligas" class="menu-item <?= ($activeMenu ?? '') === 'ligas' ? 'active' : '' ?>">
-                <span class="menu-icon">🏆</span>
-                <span>Ligas</span>
-            </a>
+            <?php if ($this->tienePermiso('ver', 'LigasController')): ?>
+                <a href="<?= BASE_URL ?>/ligas" class="menu-item <?= ($activeMenu ?? '') === 'ligas' ? 'active' : '' ?>">
+                    <span class="menu-icon">🏆</span>
+                    <span>Ligas</span>
+                </a>
+            <?php endif; ?>
 
-            <a href="<?= BASE_URL ?>/equipos" class="menu-item <?= ($activeMenu ?? '') === 'equipos' ? 'active' : '' ?>">
-                <span class="menu-icon">⚽</span>
-                <span>Equipos</span>
-            </a>
+            <?php if ($this->tienePermiso('ver', 'EquiposController')): ?>
+                <a href="<?= BASE_URL ?>/equipos" class="menu-item <?= ($activeMenu ?? '') === 'equipos' ? 'active' : '' ?>">
+                    <span class="menu-icon">⚽</span>
+                    <span>Equipos</span>
+                </a>
+            <?php endif; ?>
 
-            <a href="<?= BASE_URL ?>/jugadores" class="menu-item <?= ($activeMenu ?? '') === 'jugadores' ? 'active' : '' ?>">
-                <span class="menu-icon">👥</span>
-                <span>Jugadores</span>
-            </a>
+            <?php if ($this->tienePermiso('ver', 'JugadoresController')): ?>
+                <a href="<?= BASE_URL ?>/jugadores" class="menu-item <?= ($activeMenu ?? '') === 'jugadores' ? 'active' : '' ?>">
+                    <span class="menu-icon">👥</span>
+                    <span>Jugadores</span>
+                </a>
+            <?php endif; ?>
 
-            <a href="<?= BASE_URL ?>/partidos" class="menu-item <?= ($activeMenu ?? '') === 'partidos' ? 'active' : '' ?>">
-                <span class="menu-icon">📅</span>
-                <span>Calendario</span>
-            </a>
+            <?php if ($this->tienePermiso('ver', 'PartidosController')): ?>
+                <a href="<?= BASE_URL ?>/partidos" class="menu-item <?= ($activeMenu ?? '') === 'partidos' ? 'active' : '' ?>">
+                    <span class="menu-icon">📅</span>
+                    <span>Calendario</span>
+                </a>
+            <?php endif; ?>
 
-            <a href="<?= BASE_URL ?>/pagos" class="menu-item <?= ($activeMenu ?? '') === 'pagos' ? 'active' : '' ?>">
-                <span class="menu-icon">💰</span>
-                <span>Pagos</span>
-            </a>
+            <?php if ($this->tienePermiso('ver', 'PagosController')): ?>
+                <a href="<?= BASE_URL ?>/pagos" class="menu-item <?= ($activeMenu ?? '') === 'pagos' ? 'active' : '' ?>">
+                    <span class="menu-icon">💰</span>
+                    <span>Pagos</span>
+                </a>
+            <?php endif; ?>
 
-            <a href="<?= BASE_URL ?>/reportes" class="menu-item <?= ($activeMenu ?? '') === 'reportes' ? 'active' : '' ?>">
-                <span class="menu-icon">📊</span>
-                <span>Reportes</span>
-            </a>
+            <?php if ($this->tienePermiso('ver', 'ReportesController')): ?>
+                <a href="<?= BASE_URL ?>/reportes" class="menu-item <?= ($activeMenu ?? '') === 'reportes' ? 'active' : '' ?>">
+                    <span class="menu-icon">📊</span>
+                    <span>Reportes</span>
+                </a>
+            <?php endif; ?>
         </nav>
 
-        <div class="menu-title">Administración</div>
+        <?php if ($this->esAdmin()): ?>
+            <div class="menu-title">Administración</div>
 
-        <nav class="menu">
-            <a href="<?= BASE_URL ?>/usuarios" class="menu-item <?= ($activeMenu ?? '') === 'usuarios' ? 'active' : '' ?>">
-                <span class="menu-icon">🧑‍💼</span>
-                <span>Usuarios</span>
-            </a>
+            <nav class="menu">
+                <a href="<?= BASE_URL ?>/usuarios" class="menu-item <?= ($activeMenu ?? '') === 'usuarios' ? 'active' : '' ?>">
+                    <span class="menu-icon">🧑‍💼</span>
+                    <span>Usuarios</span>
+                </a>
 
-            <?php /*
-            <a href="<?= BASE_URL ?>/staff" class="menu-item <?= ($activeMenu ?? '') === 'staff' ? 'active' : '' ?>">
-                <span class="menu-icon">🎽</span>
-                <span>Representantes y DT</span>
-            </a>
-            */ ?>
-        </nav>
+                <?php /*
+                <a href="<?= BASE_URL ?>/staff" class="menu-item <?= ($activeMenu ?? '') === 'staff' ? 'active' : '' ?>">
+                    <span class="menu-icon">🎽</span>
+                    <span>Representantes y DT</span>
+                </a>
+                */ ?>
+            </nav>
+        <?php endif; ?>
 
         <div class="sidebar-bottom">
-            <a href="#" class="menu-item">
+            <a href="<?= BASE_URL ?>/configuracion" class="menu-item <?= ($activeMenu ?? '') === 'configuracion' ? 'active' : '' ?>">
                 <span class="menu-icon">⚙</span>
                 <span>Configuración</span>
             </a>

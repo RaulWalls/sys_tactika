@@ -3,7 +3,9 @@
         <h1>Pagos</h1>
         <p>Ingresos y gastos del equipo.</p>
     </div>
-    <a href="<?= BASE_URL ?>/pagos/crear" class="btn btn-primary">+ Nuevo pago</a>
+    <?php if ($this->tienePermiso('crear')): ?>
+        <a href="<?= BASE_URL ?>/pagos/crear" class="btn btn-primary">+ Nuevo pago</a>
+    <?php endif; ?>
 </div>
 
 <div class="finance mb-4">
@@ -54,8 +56,12 @@
                             </td>
                             <td><span class="badge-estado badge-<?= $p['estado'] ?>"><?= ucfirst($p['estado']) ?></span></td>
                             <td class="text-end">
-                                <a href="<?= BASE_URL ?>/pagos/editar/<?= $p['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>
-                                <a href="<?= BASE_URL ?>/pagos/eliminar/<?= $p['id'] ?>" class="btn btn-sm btn-outline-danger" data-confirm="¿Eliminar este pago?">Eliminar</a>
+                                <?php if ($this->tienePermiso('editar')): ?>
+                                    <a href="<?= BASE_URL ?>/pagos/editar/<?= $p['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <?php endif; ?>
+                                <?php if ($this->tienePermiso('eliminar')): ?>
+                                    <a href="<?= BASE_URL ?>/pagos/eliminar/<?= $p['id'] ?>" class="btn btn-sm btn-outline-danger" data-confirm="¿Eliminar este pago?">Eliminar</a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

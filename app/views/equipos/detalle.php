@@ -15,7 +15,9 @@
     </div>
 
     <div class="d-flex gap-2">
-        <a href="<?= BASE_URL ?>/equipos/editar/<?= $equipo['id'] ?>" class="btn btn-outline-secondary">Editar</a>
+        <?php if ($this->tienePermiso('editar')): ?>
+            <a href="<?= BASE_URL ?>/equipos/editar/<?= $equipo['id'] ?>" class="btn btn-outline-secondary">Editar</a>
+        <?php endif; ?>
         <a href="<?= BASE_URL ?>/equipos" class="btn btn-outline-secondary">← Volver</a>
     </div>
 </div>
@@ -78,7 +80,9 @@
 <div class="card">
     <div class="section-header">
         <h2>Jugadores</h2>
-        <a href="<?= BASE_URL ?>/jugadores/crear">+ Agregar jugador →</a>
+        <?php if ($this->tienePermiso('crear', 'JugadoresController')): ?>
+            <a href="<?= BASE_URL ?>/jugadores/crear">+ Agregar jugador →</a>
+        <?php endif; ?>
     </div>
 
     <div class="table-responsive">
@@ -115,8 +119,11 @@
                                 <?php endif; ?>
                             </td>
                             <td><span class="badge-estado badge-<?= $j['estado'] ?>"><?= ucfirst($j['estado']) ?></span></td>
+                            <?php $esMiPropioPerfil = ($_SESSION['usuario_rol'] ?? '') === 'jugador' && (int) ($_SESSION['usuario_jugador_id'] ?? 0) === (int) $j['id']; ?>
                             <td class="text-end">
-                                <a href="<?= BASE_URL ?>/jugadores/editar/<?= $j['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <?php if ($this->tienePermiso('editar', 'JugadoresController') && (($_SESSION['usuario_rol'] ?? '') !== 'jugador' || $esMiPropioPerfil)): ?>
+                                    <a href="<?= BASE_URL ?>/jugadores/editar/<?= $j['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

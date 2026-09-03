@@ -1,3 +1,5 @@
+<?php $esJugador = ($_SESSION['usuario_rol'] ?? '') === 'jugador'; ?>
+
 <!-- WELCOME -->
 <div class="welcome">
     <h1>Buenos días 👋</h1>
@@ -5,34 +7,44 @@
 </div>
 
 <!-- STATS -->
-<div class="grid stats-grid">
-    <div class="card stat-card">
-        <div class="stat-icon">👥</div>
-        <div class="stat-number"><?= $totalJugadores ?></div>
-        <div class="stat-label">Jugadores registrados</div>
+<?php if ($esJugador): ?>
+    <div class="grid" style="grid-template-columns: minmax(0, 220px);">
+        <div class="card stat-card">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-number"><?= $totalPartidosJugados ?></div>
+            <div class="stat-label">Partidos jugados</div>
+        </div>
     </div>
+<?php else: ?>
+    <div class="grid stats-grid">
+        <div class="card stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-number"><?= $totalJugadores ?></div>
+            <div class="stat-label">Jugadores registrados</div>
+        </div>
 
-    <div class="card stat-card">
-        <div class="stat-icon">⚽</div>
-        <div class="stat-number"><?= $totalEquipos ?></div>
-        <div class="stat-label">Equipos</div>
+        <div class="card stat-card">
+            <div class="stat-icon">⚽</div>
+            <div class="stat-number"><?= $totalEquipos ?></div>
+            <div class="stat-label">Equipos</div>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-number"><?= $totalPartidosJugados ?></div>
+            <div class="stat-label">Partidos jugados</div>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-number">$<?= number_format($resumenFinanciero['balance'], 2) ?></div>
+            <div class="stat-label">Balance</div>
+        </div>
     </div>
+<?php endif; ?>
 
-    <div class="card stat-card">
-        <div class="stat-icon">🏆</div>
-        <div class="stat-number"><?= count($ultimosResultados) ?></div>
-        <div class="stat-label">Partidos jugados</div>
-    </div>
-
-    <div class="card stat-card">
-        <div class="stat-icon">💰</div>
-        <div class="stat-number">$<?= number_format($resumenFinanciero['balance'], 2) ?></div>
-        <div class="stat-label">Balance</div>
-    </div>
-</div>
-
-<!-- MATCH + EVENTS -->
-<div class="grid main-grid" style="margin-top:20px;">
+<!-- MATCH (+ EVENTS para admin/entrenador) -->
+<div class="grid <?= $esJugador ? '' : 'main-grid' ?>" style="margin-top:20px;<?= $esJugador ? ' grid-template-columns: 1fr;' : '' ?>">
 
     <!-- NEXT MATCH -->
     <div class="card">
@@ -87,35 +99,37 @@
         <?php endif; ?>
     </div>
 
-    <!-- EVENTS -->
-    <div class="card">
-        <div class="section-header">
-            <h2>Próximos eventos</h2>
-            <a href="<?= BASE_URL ?>/partidos">Calendario →</a>
-        </div>
+    <?php if (!$esJugador): ?>
+        <!-- EVENTS -->
+        <div class="card">
+            <div class="section-header">
+                <h2>Próximos eventos</h2>
+                <a href="<?= BASE_URL ?>/partidos">Calendario →</a>
+            </div>
 
-        <?php if (!empty($proximosPartidos)): ?>
-            <?php foreach ($proximosPartidos as $partido): ?>
-                <div class="event">
-                    <div class="event-date">
-                        <strong><?= date('d', strtotime($partido['fecha'])) ?></strong>
-                        <span><?= date('M', strtotime($partido['fecha'])) ?></span>
+            <?php if (!empty($proximosPartidos)): ?>
+                <?php foreach ($proximosPartidos as $partido): ?>
+                    <div class="event">
+                        <div class="event-date">
+                            <strong><?= date('d', strtotime($partido['fecha'])) ?></strong>
+                            <span><?= date('M', strtotime($partido['fecha'])) ?></span>
+                        </div>
+                        <div class="event-info">
+                            <strong>Vs. <?= htmlspecialchars($partido['rival']) ?></strong>
+                            <span><?= date('H:i', strtotime($partido['hora'])) ?> · <?= htmlspecialchars($partido['sede'] ?? '') ?></span>
+                        </div>
                     </div>
-                    <div class="event-info">
-                        <strong>Vs. <?= htmlspecialchars($partido['rival']) ?></strong>
-                        <span><?= date('H:i', strtotime($partido['hora'])) ?> · <?= htmlspecialchars($partido['sede'] ?? '') ?></span>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p class="text-muted">Sin eventos próximos.</p>
-        <?php endif; ?>
-    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="text-muted">Sin eventos próximos.</p>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 
 </div>
 
-<!-- RESULTS + FINANCE -->
-<div class="grid bottom-grid" style="margin-top:20px;">
+<!-- RESULTS (+ FINANCE para admin/entrenador) -->
+<div class="grid <?= $esJugador ? '' : 'bottom-grid' ?>" style="margin-top:20px;<?= $esJugador ? ' grid-template-columns: 1fr;' : '' ?>">
 
     <!-- RESULTS -->
     <div class="card">
@@ -165,31 +179,33 @@
         <?php endif; ?>
     </div>
 
-    <!-- FINANCE -->
-    <div class="card">
-        <div class="section-header">
-            <h2>Finanzas del equipo</h2>
-            <a href="<?= BASE_URL ?>/pagos">Administrar →</a>
+    <?php if (!$esJugador): ?>
+        <!-- FINANCE -->
+        <div class="card">
+            <div class="section-header">
+                <h2>Finanzas del equipo</h2>
+                <a href="<?= BASE_URL ?>/pagos">Administrar →</a>
+            </div>
+
+            <div class="finance">
+                <div class="finance-item">
+                    <span>INGRESOS</span>
+                    <strong class="positive">$<?= number_format($resumenFinanciero['ingresos'], 2) ?></strong>
+                </div>
+
+                <div class="finance-item">
+                    <span>GASTOS</span>
+                    <strong class="negative">$<?= number_format($resumenFinanciero['gastos'], 2) ?></strong>
+                </div>
+
+                <div class="finance-item">
+                    <span>BALANCE</span>
+                    <strong class="<?= $resumenFinanciero['balance'] >= 0 ? 'positive' : 'negative' ?>">
+                        $<?= number_format($resumenFinanciero['balance'], 2) ?>
+                    </strong>
+                </div>
+            </div>
         </div>
-
-        <div class="finance">
-            <div class="finance-item">
-                <span>INGRESOS</span>
-                <strong class="positive">$<?= number_format($resumenFinanciero['ingresos'], 2) ?></strong>
-            </div>
-
-            <div class="finance-item">
-                <span>GASTOS</span>
-                <strong class="negative">$<?= number_format($resumenFinanciero['gastos'], 2) ?></strong>
-            </div>
-
-            <div class="finance-item">
-                <span>BALANCE</span>
-                <strong class="<?= $resumenFinanciero['balance'] >= 0 ? 'positive' : 'negative' ?>">
-                    $<?= number_format($resumenFinanciero['balance'], 2) ?>
-                </strong>
-            </div>
-        </div>
-    </div>
+    <?php endif; ?>
 
 </div>

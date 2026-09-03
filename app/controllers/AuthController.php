@@ -26,7 +26,9 @@ class AuthController extends Controller
                 $_SESSION['usuario_rol'] = $usuario['rol_nombre'];
                 $_SESSION['usuario_rol_id'] = $usuario['rol_id'];
                 $_SESSION['usuario_liga_id'] = $usuario['liga_id'];
+                $_SESSION['usuario_jugador_id'] = $usuario['jugador_id'];
                 $_SESSION['usuario_tema'] = $usuario['tema'] ?? 'default';
+                $_SESSION['usuario_modo_oscuro'] = (bool) ($usuario['modo_oscuro'] ?? false);
 
                 $this->redirect('dashboard');
                 return;

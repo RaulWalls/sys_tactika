@@ -4,6 +4,8 @@ class ReportesController extends Controller
 {
     public function index(): void
     {
+        $this->exigirPermiso('ver');
+
         $jugadorModel = $this->model('Jugador');
         $equipoModel = $this->model('Equipo');
         $partidoModel = $this->model('Partido');

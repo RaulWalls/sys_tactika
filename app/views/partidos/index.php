@@ -3,10 +3,12 @@
         <h1>Calendario de partidos</h1>
         <p>Próximos partidos y resultados registrados.</p>
     </div>
-    <div class="d-flex gap-2">
-        <a href="<?= BASE_URL ?>/partidos/generar" class="btn btn-primary">🗓 Generar calendario</a>
-        <?php /* <a href="<?= BASE_URL ?>/partidos/crear" class="btn btn-primary">+ Nuevo partido</a> */ ?>
-    </div>
+    <?php if ($this->tienePermiso('crear')): ?>
+        <div class="d-flex gap-2">
+            <a href="<?= BASE_URL ?>/partidos/generar" class="btn btn-primary">🗓 Generar calendario</a>
+            <?php /* <a href="<?= BASE_URL ?>/partidos/crear" class="btn btn-primary">+ Nuevo partido</a> */ ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <div class="card">
@@ -41,8 +43,12 @@
                             </td>
                             <td><span class="badge-estado badge-<?= $p['estado'] ?>"><?= ucfirst($p['estado']) ?></span></td>
                             <td class="text-end">
-                                <a href="<?= BASE_URL ?>/partidos/editar/<?= $p['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>
-                                <a href="<?= BASE_URL ?>/partidos/eliminar/<?= $p['id'] ?>" class="btn btn-sm btn-outline-danger" data-confirm="¿Eliminar este partido?">Eliminar</a>
+                                <?php if ($this->tienePermiso('editar')): ?>
+                                    <a href="<?= BASE_URL ?>/partidos/editar/<?= $p['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                <?php endif; ?>
+                                <?php if ($this->tienePermiso('eliminar')): ?>
+                                    <a href="<?= BASE_URL ?>/partidos/eliminar/<?= $p['id'] ?>" class="btn btn-sm btn-outline-danger" data-confirm="¿Eliminar este partido?">Eliminar</a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
