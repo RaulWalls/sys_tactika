@@ -4,7 +4,7 @@
             <?php if (!empty($equipo['escudo'])): ?>
                 <img src="<?= BASE_URL . '/' . htmlspecialchars($equipo['escudo']) ?>" alt="Escudo">
             <?php else: ?>
-                ⚽
+                <i class="fa-solid fa-futbol"></i>
             <?php endif; ?>
         </div>
 

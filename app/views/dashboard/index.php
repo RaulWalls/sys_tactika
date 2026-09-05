@@ -1,42 +1,71 @@
-<?php $esJugador = ($_SESSION['usuario_rol'] ?? '') === 'jugador'; ?>
+<?php
+    $esJugador = ($_SESSION['usuario_rol'] ?? '') === 'jugador'; 
+    $esEntrenador = ($_SESSION['usuario_rol'] ?? '') === 'entrenador'; 
+    $esAdmin = ($_SESSION['usuario_rol'] ?? '') === 'administrador';
+?>
 
 <!-- WELCOME -->
 <div class="welcome">
-    <h1>Buenos días 👋</h1>
-    <p>Aquí tienes el resumen de tu equipo.</p>
+    <?php 
+        $horaActual = (int) date('H');
+        echo $horaActual;
+        if ($horaActual >= 6 && $horaActual < 12) {
+            echo '<h1>Buenos días <i class="fa-solid fa-sun"></i></h1>';
+        } elseif ($horaActual >= 12 && $horaActual < 18) {
+            echo '<h1>Buenas tardes <i class="fa-solid fa-clock"></i></h1>';
+        } else {
+            echo '<h1>Buenas noches <i class="fa-solid fa-moon"></i></h1>';
+        }
+    ?>
+    <?php if ($esJugador): ?>
+        <p>Aquí tienes el resumen de tu desempeño.</p>
+    <?php elseif ($esEntrenador): ?>
+        <p>Aquí tienes el resumen de tu equipo.</p>
+    <?php elseif ($esAdmin): ?>
+        <p>Aquí tienes el resumen de tus Ligas.</p>
+        <?php endif; ?>
+
 </div>
 
 <!-- STATS -->
 <?php if ($esJugador): ?>
     <div class="grid" style="grid-template-columns: minmax(0, 220px);">
         <div class="card stat-card">
-            <div class="stat-icon">🏆</div>
+            <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
             <div class="stat-number"><?= $totalPartidosJugados ?></div>
             <div class="stat-label">Partidos jugados</div>
         </div>
     </div>
-<?php else: ?>
+    <?php else: ?>
     <div class="grid stats-grid">
+        <?php if($esAdmin): ?>
+            <div class="card stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
+                <div class="stat-number"><?= $totalLigas ?></div>
+                <div class="stat-label">Ligas</div>
+            </div>
+        <?php endif; ?>
+        
         <div class="card stat-card">
-            <div class="stat-icon">👥</div>
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
             <div class="stat-number"><?= $totalJugadores ?></div>
             <div class="stat-label">Jugadores registrados</div>
         </div>
 
         <div class="card stat-card">
-            <div class="stat-icon">⚽</div>
+            <div class="stat-icon"><i class="fa-solid fa-futbol"></i></div>
             <div class="stat-number"><?= $totalEquipos ?></div>
             <div class="stat-label">Equipos</div>
         </div>
 
         <div class="card stat-card">
-            <div class="stat-icon">🏆</div>
+            <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
             <div class="stat-number"><?= $totalPartidosJugados ?></div>
             <div class="stat-label">Partidos jugados</div>
         </div>
 
         <div class="card stat-card">
-            <div class="stat-icon">💰</div>
+            <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
             <div class="stat-number">$<?= number_format($resumenFinanciero['balance'], 2) ?></div>
             <div class="stat-label">Balance</div>
         </div>
@@ -68,7 +97,7 @@
                             <?php if (!empty($siguiente['equipo_escudo'])): ?>
                                 <img src="<?= BASE_URL . '/' . htmlspecialchars($siguiente['equipo_escudo']) ?>" alt="Escudo">
                             <?php else: ?>
-                                ⚽
+                                <i class="fa-solid fa-futbol"></i>
                             <?php endif; ?>
                         </div>
                         <div class="team-name"><?= htmlspecialchars($siguiente['equipo_nombre'] ?? APP_NAME) ?></div>
@@ -81,7 +110,7 @@
                             <?php if (!empty($siguiente['rival_escudo'])): ?>
                                 <img src="<?= BASE_URL . '/' . htmlspecialchars($siguiente['rival_escudo']) ?>" alt="Escudo">
                             <?php else: ?>
-                                ⚡
+                                <i class="fa-solid fa-bolt"></i>
                             <?php endif; ?>
                         </div>
                         <div class="team-name"><?= htmlspecialchars($siguiente['rival']) ?></div>
@@ -89,9 +118,9 @@
                 </div>
 
                 <div class="match-date">
-                    <span>📅 <?= date('d M Y', strtotime($siguiente['fecha'])) ?></span>
-                    <span>🕐 <?= date('h:i A', strtotime($siguiente['hora'])) ?></span>
-                    <span>📍 <?= htmlspecialchars($siguiente['sede'] ?? 'Por definir') ?></span>
+                    <span><i class="fa-solid fa-calendar-days"></i> <?= date('d M Y', strtotime($siguiente['fecha'])) ?></span>
+                    <span><i class="fa-regular fa-clock"></i> <?= date('h:i A', strtotime($siguiente['hora'])) ?></span>
+                    <span><i class="fa-solid fa-location-dot"></i> <?= htmlspecialchars($siguiente['sede'] ?? 'Por definir') ?></span>
                 </div>
             </div>
         <?php else: ?>
@@ -152,7 +181,7 @@
                             <?php if (!empty($r['equipo_escudo'])): ?>
                                 <img src="<?= BASE_URL . '/' . htmlspecialchars($r['equipo_escudo']) ?>" alt="Escudo">
                             <?php else: ?>
-                                ⚽
+                                <i class="fa-solid fa-futbol"></i>
                             <?php endif; ?>
                         </div>
                         <?= htmlspecialchars($r['equipo_nombre'] ?? APP_NAME) ?>
@@ -166,7 +195,7 @@
                             <?php if (!empty($r['rival_escudo'])): ?>
                                 <img src="<?= BASE_URL . '/' . htmlspecialchars($r['rival_escudo']) ?>" alt="Escudo">
                             <?php else: ?>
-                                ⚡
+                                <i class="fa-solid fa-bolt"></i>
                             <?php endif; ?>
                         </div>
                         <?= htmlspecialchars($r['rival']) ?>
@@ -183,7 +212,11 @@
         <!-- FINANCE -->
         <div class="card">
             <div class="section-header">
-                <h2>Finanzas del equipo</h2>
+                <?php if ($esAdmin): ?>
+                    <h2>Finanzas de la liga</h2>
+                <?php elseif ($esEntrenador): ?>
+                    <h2>Finanzas del equipo</h2>
+                <?php endif; ?>
                 <a href="<?= BASE_URL ?>/pagos">Administrar →</a>
             </div>
 

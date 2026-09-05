@@ -5,25 +5,25 @@
 
 <div class="grid stats-grid">
     <div class="card stat-card">
-        <div class="stat-icon">👥</div>
+        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
         <div class="stat-number"><?= $totalJugadores ?></div>
         <div class="stat-label">Jugadores</div>
     </div>
 
     <div class="card stat-card">
-        <div class="stat-icon">⚽</div>
+        <div class="stat-icon"><i class="fa-solid fa-futbol"></i></div>
         <div class="stat-number"><?= $totalEquipos ?></div>
         <div class="stat-label">Equipos</div>
     </div>
 
     <div class="card stat-card">
-        <div class="stat-icon">🏆</div>
+        <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
         <div class="stat-number"><?= $totalPartidos ?></div>
         <div class="stat-label">Partidos totales</div>
     </div>
 
     <div class="card stat-card">
-        <div class="stat-icon">📊</div>
+        <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
         <div class="stat-number"><?= $partidosJugados ?></div>
         <div class="stat-label">Partidos jugados</div>
     </div>

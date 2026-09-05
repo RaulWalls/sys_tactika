@@ -10,7 +10,7 @@
             <div class="col-md-12">
                 <label class="form-label">Foto del jugador</label>
                 <div class="escudo-preview" id="foto-preview">
-                    <span class="escudo-placeholder-icon" id="foto-placeholder">👕</span>
+                    <span class="escudo-placeholder-icon" id="foto-placeholder"><i class="fa-solid fa-shirt"></i></span>
                     <img id="foto-preview-img" src="" alt="Foto" style="display:none;">
                 </div>
                 <input type="file" name="foto" accept="image/*" class="form-control" data-preview-img="foto-preview-img" data-preview-placeholder="foto-placeholder">

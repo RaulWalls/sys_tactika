@@ -10,7 +10,7 @@
             <div class="col-md-12">
                 <label class="form-label">Escudo del equipo</label>
                 <div class="escudo-preview" id="escudo-preview">
-                    <span class="escudo-placeholder-icon" id="escudo-placeholder" style="<?= !empty($equipo['escudo']) ? 'display:none;' : '' ?>">⚽</span>
+                    <span class="escudo-placeholder-icon" id="escudo-placeholder" style="<?= !empty($equipo['escudo']) ? 'display:none;' : '' ?>"><i class="fa-solid fa-futbol"></i></span>
                     <img id="escudo-preview-img" src="<?= !empty($equipo['escudo']) ? BASE_URL . '/' . htmlspecialchars($equipo['escudo']) : '' ?>" alt="Escudo" style="<?= empty($equipo['escudo']) ? 'display:none;' : '' ?>">
                 </div>
                 <input type="file" name="escudo" accept="image/*" class="form-control" data-preview-img="escudo-preview-img" data-preview-placeholder="escudo-placeholder">

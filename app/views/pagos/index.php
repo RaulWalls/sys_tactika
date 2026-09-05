@@ -1,7 +1,13 @@
+<?php $esAdmin = ($_SESSION['usuario_rol'] ?? '') === 'administrador'; ?>
+<?php $esEntrenador = ($_SESSION['usuario_rol'] ?? '') === 'entrenador'; ?>
 <div class="welcome d-flex align-items-center justify-content-between">
     <div>
         <h1>Pagos</h1>
-        <p>Ingresos y gastos del equipo.</p>
+        <?php if ($esEntrenador): ?>
+            <p>Ingresos y gastos del equipo.</p>
+        <?php else: ?>
+            <p>Resumen financiero.</p>
+        <?php endif; ?>
     </div>
     <?php if ($this->tienePermiso('crear')): ?>
         <a href="<?= BASE_URL ?>/pagos/crear" class="btn btn-primary">+ Nuevo pago</a>

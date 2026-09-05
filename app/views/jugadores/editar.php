@@ -16,7 +16,7 @@
             <div class="col-md-12">
                 <label class="form-label">Foto del jugador</label>
                 <div class="escudo-preview" id="foto-preview">
-                    <span class="escudo-placeholder-icon" id="foto-placeholder" style="<?= !empty($jugador['foto']) ? 'display:none;' : '' ?>">👕</span>
+                    <span class="escudo-placeholder-icon" id="foto-placeholder" style="<?= !empty($jugador['foto']) ? 'display:none;' : '' ?>"><i class="fa-solid fa-shirt"></i></span>
                     <img id="foto-preview-img" src="<?= !empty($jugador['foto']) ? BASE_URL . '/' . htmlspecialchars($jugador['foto']) : '' ?>" alt="Foto" style="<?= empty($jugador['foto']) ? 'display:none;' : '' ?>">
                 </div>
                 <input type="file" name="foto" accept="image/*" class="form-control" data-preview-img="foto-preview-img" data-preview-placeholder="foto-placeholder" <?= !empty($esRolJugador) ? 'disabled' : '' ?>>

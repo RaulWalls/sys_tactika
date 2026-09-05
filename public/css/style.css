@@ -11,6 +11,9 @@
     --surface: #ffffff;
 
     --text: #1f2937;
+    --text-sidebar: #aaa6bb;
+    --text-logo: #fff;
+    --text-light: #a895ff;
     --muted: #7b8190;
 
     --success: #22a06b;
@@ -25,6 +28,8 @@
     --border: #e8e9ef;
 
     --sidebar-width: 250px;
+    --sidebar-color: #171329;
+    --topbar: #ffffff;
 }
 
 
@@ -36,24 +41,43 @@ body[data-theme="barcelona"] {
     --primary: #8e0044;
     --primary-dark: #294c97;
     --primary-light: #f5e0e9;
+    --sidebar-color: #294c97;
+    --background: #f5e0e9;
+    /* --text: #e1bb00; */
+    --text-logo: #e1bb00;
+    --text-light: #8e0044;
+    /* bd002c */
 }
 
 body[data-theme="real_madrid"] {
-    --primary: #2c519e;
+    --primary: #efbe0b;
     --primary-dark: #1c3568;
     --primary-light: #eef2fb;
+    --sidebar-color: #1c3568;
+    --background: #eef2fb;
+    --text-light: #efbe0b;
+    /* d0324b */
 }
 
 body[data-theme="manchester_city"] {
     --primary: #172b5f;
     --primary-dark: #0d1938;
     --primary-light: #a2bfe7;
+    --text-light: #172b5f;
+    --sidebar-color: #a2bfe7;
+    --background: #f7ecd3;
+    --text-sidebar: #172b5f;
+    /* #f2c757 */
 }
 
 body[data-theme="psg"] {
     --primary: #d02f36;
     --primary-dark: #2c5195;
     --primary-light: #fbe5e6;
+    --sidebar-color: #2c5195;
+    --text-light: #d02f36;
+    --text-sidebar: #fff;
+    --background: #c7bea2;
 }
 body[data-theme="juventus"] {
     --primary: #000000;
@@ -79,7 +103,12 @@ body[data-theme="america"] {
     --primary:  #f6303e;
     --primary-dark: #0f1d41;
     --primary-light:#f0eb9a;
-    /* --background: #0f1d41; */
+    /* --background: #f0eb9a; */
+    --sidebar-color: #f0eb9a;
+    --text-logo: #0f1d41;
+    --text: #0f1d41;
+    --text-sidebar: #0f1d41;
+    --text-light: #f6303e;
 }
 
 
@@ -100,20 +129,27 @@ body[data-modo="oscuro"] {
     --success-bg: #163a2c;
     --danger-bg: #3a1f1f;
     --warning-bg: #3a301a;
+
+    --bs-body-color:#fff;
+    --topbar: #1e1b2e;
+    --notification: #262138;
 }
 
 body[data-modo="oscuro"] .sidebar {
-    background: #0b0a13;
+    /* background: #0b0a13; */
+    background: var(--sidebar-color);
 }
 
 body[data-modo="oscuro"] .notification {
-    background: #262138;
+    background: var(--notification);
+    color: var(--primary-light);
 }
 
 body[data-modo="oscuro"] .finance-item,
 body[data-modo="oscuro"] .mini-logo,
 body[data-modo="oscuro"] .badge-neutro {
-    background: #262138;
+    background: var(--notification);
+    color: var(--primary-light);
 }
 
 /* =========================
@@ -157,7 +193,7 @@ a {
 
 .sidebar {
     width: var(--sidebar-width);
-    background: #171329;
+    background: var(--sidebar-color);
     color: white;
     padding: 25px 15px;
 
@@ -198,12 +234,13 @@ a {
     font-size: 22px;
     font-weight: 800;
     letter-spacing: -0.5px;
-    color: white;
+    color: var(--text-logo);
 }
 
 .logo-text span {
-    color: #a895ff;
+    color: var(--text-light);
 }
+
 
 .menu-title {
     font-size: 10px;
@@ -229,7 +266,8 @@ a {
 
     border-radius: 9px;
 
-    color: #aaa6bb;
+    /* color: #aaa6bb; */
+    color: var(--text-sidebar);
 
     font-size: 14px;
 
@@ -250,6 +288,12 @@ a {
     width: 20px;
     text-align: center;
     font-size: 16px;
+}
+
+.logo-icon i,
+.stat-icon i,
+.notification i {
+    font-size: 18px;
 }
 
 .sidebar-bottom {
@@ -274,7 +318,7 @@ a {
 .topbar {
     height: 75px;
 
-    background: white;
+    background: var(--topbar);
 
     border-bottom: 1px solid var(--border);
 
@@ -308,6 +352,8 @@ a {
 
     border-radius: 50%;
 
+    color: var(--text-light);
+    
     background: #f5f4f9;
 
     display: flex;
@@ -646,6 +692,7 @@ a {
 
 .stat-card {
     position: relative;
+    
 }
 
 .stat-icon {

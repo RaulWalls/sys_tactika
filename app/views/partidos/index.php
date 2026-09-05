@@ -5,7 +5,7 @@
     </div>
     <?php if ($this->tienePermiso('crear')): ?>
         <div class="d-flex gap-2">
-            <a href="<?= BASE_URL ?>/partidos/generar" class="btn btn-primary">🗓 Generar calendario</a>
+            <a href="<?= BASE_URL ?>/partidos/generar" class="btn btn-primary"><i class="fa-solid fa-calendar-plus"></i> Generar calendario</a>
             <?php /* <a href="<?= BASE_URL ?>/partidos/crear" class="btn btn-primary">+ Nuevo partido</a> */ ?>
         </div>
     <?php endif; ?>

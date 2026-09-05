@@ -10,7 +10,7 @@
             <div class="col-md-12">
                 <label class="form-label">Escudo del equipo</label>
                 <div class="escudo-preview" id="escudo-preview">
-                    <span class="escudo-placeholder-icon" id="escudo-placeholder">⚽</span>
+                    <span class="escudo-placeholder-icon" id="escudo-placeholder"><i class="fa-solid fa-futbol"></i></span>
                     <img id="escudo-preview-img" src="" alt="Escudo" style="display:none;">
                 </div>
                 <input type="file" name="escudo" accept="image/*" class="form-control" data-preview-img="escudo-preview-img" data-preview-placeholder="escudo-placeholder">

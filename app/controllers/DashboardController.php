@@ -20,7 +20,10 @@ class DashboardController extends Controller
 
         // Jugador: solo bienvenida, partidos jugados, próximo partido y
         // últimos resultados. No necesita totales de plantilla ni finanzas.
-        if ($rol !== 'jugador') {
+        if ($rol === 'jugador') {
+            // Para la validación de "sin partidos pendientes" del próximo partido.
+            $data['totalEquipos'] = count($this->model('Equipo')->conLiga($misEquipos));
+        } else {
             $equipoModel = $this->model('Equipo');
             $jugadorModel = $this->model('Jugador');
             $pagoModel = $this->model('Pago');
@@ -28,9 +31,10 @@ class DashboardController extends Controller
             $data['totalJugadores'] = count($jugadorModel->conEquipo($misEquipos));
             $data['totalEquipos'] = count($equipoModel->conLiga($misEquipos));
             $data['resumenFinanciero'] = $pagoModel->resumen($misEquipos);
-        } else {
-            // Para la validación de "sin partidos pendientes" del próximo partido.
-            $data['totalEquipos'] = count($this->model('Equipo')->conLiga($misEquipos));
+
+            if ($rol === 'administrador') {
+                $data['totalLigas'] = $this->model('Liga')->totalLigas();
+            }
         }
 
         $this->view('dashboard/index', $data);

@@ -4,7 +4,7 @@
             <?php if (!empty($jugador['foto'])): ?>
                 <img src="<?= BASE_URL . '/' . htmlspecialchars($jugador['foto']) ?>" alt="Foto">
             <?php else: ?>
-                👕
+                <i class="fa-solid fa-shirt"></i>
             <?php endif; ?>
         </div>
 

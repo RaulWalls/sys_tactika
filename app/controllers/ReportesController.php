@@ -7,7 +7,7 @@ class ReportesController extends Controller
         $this->exigirPermiso('ver');
 
         $jugadorModel = $this->model('Jugador');
-        $equipoModel = $this->model('Equipo');
+        $equipoModel = $this->model('Liga');
         $partidoModel = $this->model('Partido');
         $pagoModel = $this->model('Pago');
 
@@ -22,6 +22,7 @@ class ReportesController extends Controller
             'titulo' => 'Reportes',
             'activeMenu' => 'reportes',
             'totalJugadores' => count($jugadorModel->all()),
+            'totalLigas' => $equipoModel->totalLigas()['total_ligas'],
             'totalEquipos' => count($equipoModel->all()),
             'totalPartidos' => count($partidos),
             'partidosJugados' => count($jugados),
