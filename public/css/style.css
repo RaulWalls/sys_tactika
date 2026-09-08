@@ -30,6 +30,8 @@
     --sidebar-width: 250px;
     --sidebar-color: #171329;
     --topbar: #ffffff;
+
+    --table-bg: #ffffff;
 }
 
 
@@ -133,6 +135,8 @@ body[data-modo="oscuro"] {
     --bs-body-color:#fff;
     --topbar: #1e1b2e;
     --notification: #262138;
+
+    --table-bg: #1e1b2e;
 }
 
 body[data-modo="oscuro"] .sidebar {
@@ -150,6 +154,68 @@ body[data-modo="oscuro"] .mini-logo,
 body[data-modo="oscuro"] .badge-neutro {
     background: var(--notification);
     color: var(--primary-light);
+}
+
+body[data-modo="oscuro"] .form-control,
+body[data-modo="oscuro"] .form-select {
+    background-color: var(--surface);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+body[data-modo="oscuro"] .form-control::placeholder {
+    color: var(--muted);
+}
+
+body[data-modo="oscuro"] .form-control:focus,
+body[data-modo="oscuro"] .form-select:focus {
+    background-color: var(--surface);
+    border-color: var(--primary);
+    color: var(--text);
+    box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .1);
+}
+
+body[data-modo="oscuro"] .form-control:disabled,
+body[data-modo="oscuro"] .form-select:disabled {
+    background-color: var(--notification);
+    color: var(--muted);
+}
+
+body[data-modo="oscuro"] .form-check-input {
+    background-color: var(--surface);
+    border-color: var(--border);
+}
+
+body[data-modo="oscuro"] .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+body[data-modo="oscuro"] .form-label {
+    color: var(--text);
+}
+
+body[data-modo="oscuro"] .form-control::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+body[data-modo="oscuro"] .modal-content {
+    background-color: var(--surface);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+body[data-modo="oscuro"] .modal-header,
+body[data-modo="oscuro"] .modal-footer {
+    border-color: var(--border);
+}
+
+body[data-modo="oscuro"] .modal-title {
+    color: var(--text);
+}
+
+body[data-modo="oscuro"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(1.5);
 }
 
 /* =========================
@@ -914,12 +980,28 @@ a {
 
 .card table {
     margin-bottom: 0;
+    background: var(--table-bg);
 }
 
 .card .table > :not(caption) > * > * {
     border-bottom-color: var(--border);
+    color: var(--text);
+    background: transparent;
     font-size: 13px;
     vertical-align: middle;
+}
+
+.card .table thead th {
+    color: var(--muted);
+    border-bottom-color: var(--border);
+}
+
+.form-text {
+    color: var(--muted);
+}
+
+.text-muted {
+    color: var(--muted) !important;
 }
 .badge-tarjeta-roja{
     background: var(--danger-bg);
