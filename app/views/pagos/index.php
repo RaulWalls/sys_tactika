@@ -14,6 +14,21 @@
     <?php endif; ?>
 </div>
 
+<?php if ($esAdmin): ?>
+    <form method="get" action="<?= BASE_URL ?>/pagos" class="mb-3">
+        <div class="col-md-3">
+            <select name="equipo_id" class="form-select" onchange="this.form.submit()">
+                <option value="">Todos los equipos</option>
+                <?php foreach ($equipos as $e): ?>
+                    <option value="<?= $e['id'] ?>" <?= $equipoSeleccionado === (int) $e['id'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($e['nombre']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </form>
+<?php endif; ?>
+
 <div class="finance mb-4">
     <div class="finance-item">
         <span>INGRESOS</span>
@@ -80,6 +95,27 @@
         </table>
     </div>
 </div>
+
+<?php if (($totalPaginas ?? 1) > 1): ?>
+    <nav class="mt-3">
+        <ul class="pagination justify-content-end mb-0">
+            <?php $queryBase = $equipoSeleccionado ? ['equipo_id' => $equipoSeleccionado] : []; ?>
+            <li class="page-item <?= $pagina <= 1 ? 'disabled' : '' ?>">
+                <a class="page-link" href="<?= BASE_URL ?>/pagos?<?= http_build_query($queryBase + ['pagina' => $pagina - 1]) ?>">Anterior</a>
+            </li>
+
+            <?php for ($p = 1; $p <= $totalPaginas; $p++): ?>
+                <li class="page-item <?= $p === $pagina ? 'active' : '' ?>">
+                    <a class="page-link" href="<?= BASE_URL ?>/pagos?<?= http_build_query($queryBase + ['pagina' => $p]) ?>"><?= $p ?></a>
+                </li>
+            <?php endfor; ?>
+
+            <li class="page-item <?= $pagina >= $totalPaginas ? 'disabled' : '' ?>">
+                <a class="page-link" href="<?= BASE_URL ?>/pagos?<?= http_build_query($queryBase + ['pagina' => $pagina + 1]) ?>">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
+<?php endif; ?>
 
 <?php if (!empty($pagos)): ?>
     <?php foreach ($pagos as $p): ?>

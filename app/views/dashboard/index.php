@@ -8,7 +8,6 @@
 <div class="welcome">
     <?php 
         $horaActual = (int) date('H');
-        echo $horaActual;
         if ($horaActual >= 6 && $horaActual < 12) {
             echo '<h1>Buenos días <i class="fa-solid fa-sun"></i></h1>';
         } elseif ($horaActual >= 12 && $horaActual < 18) {
@@ -29,13 +28,70 @@
 
 <!-- STATS -->
 <?php if ($esJugador): ?>
-    <div class="grid" style="grid-template-columns: minmax(0, 220px);">
-        <div class="card stat-card">
-            <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
-            <div class="stat-number"><?= $totalPartidosJugados ?></div>
-            <div class="stat-label">Partidos jugados</div>
+    <div class="player-id-card">
+        <span class="player-id-corner tl"></span>
+        <span class="player-id-corner tr"></span>
+        <span class="player-id-corner bl"></span>
+        <span class="player-id-corner br"></span>
+
+        <div class="player-id-nombre"><?= htmlspecialchars(mb_strtoupper(($miJugador['nombre'] ?? '') . ' ' . ($miJugador['apellido'] ?? ''))) ?></div>
+        <div class="player-id-sub">
+            #<?= htmlspecialchars($miJugador['numero'] ?? '-') ?> · <?= htmlspecialchars(mb_strtoupper($miJugador['posicion_nombre'] ?? 'Sin posición')) ?>
+        </div>
+
+        <div class="player-id-rango">
+            <i class="<?= htmlspecialchars($miRango['icono'] ?? 'fa-solid fa-shield-halved') ?>"></i>
+            <?= htmlspecialchars(mb_strtoupper($miRango['nombre'] ?? 'Sin rango')) ?>
+            <div class="player-id-nivel">NIVEL <?= (int) $miNivel ?></div>
+        </div>
+
+        <div class="player-id-stats">
+            <div><i class="fa-solid fa-trophy"></i> <?= (int) $miTotalLogros ?> LOGROS</div>
+            <div><i class="fa-solid fa-medal"></i> <?= (int) $miTotalBadges ?> BADGES</div>
         </div>
     </div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 20px;">
+        <div class="card">
+            <div class="section-header">
+                <h2>Badges</h2>
+                <a href="<?= BASE_URL ?>/progreso">Ver todas →</a>
+            </div>
+            <?php if (empty($misBadges)): ?>
+                <p class="text-muted mb-0">Aún no has obtenido ninguna badge.</p>
+            <?php else: ?>
+                <div class="d-flex flex-wrap gap-2">
+                    <?php foreach ($misBadges as $b): ?>
+                        <span class="badge-mini-icon" title="<?= htmlspecialchars($b['nombre']) ?>">
+                            <?php if (!empty($b['imagen'])): ?>
+                                <img src="<?= BASE_URL . '/' . htmlspecialchars($b['imagen']) ?>" alt="">
+                            <?php else: ?>
+                                <i class="<?= htmlspecialchars($b['icono']) ?>"></i>
+                            <?php endif; ?>
+                        </span>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <div class="card">
+            <div class="section-header">
+                <h2>Últimos logros</h2>
+                <a href="<?= BASE_URL ?>/progreso">Ver todos →</a>
+            </div>
+            <?php if (empty($misLogrosRecientes)): ?>
+                <p class="text-muted mb-0">Aún no has desbloqueado ningún logro.</p>
+            <?php else: ?>
+                <?php foreach ($misLogrosRecientes as $l): ?>
+                    <div class="player-logro-reciente">
+                        <i class="<?= htmlspecialchars($l['icono']) ?>"></i>
+                        <?= htmlspecialchars($l['nombre']) ?>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
     <?php else: ?>
     <div class="grid stats-grid">
         <?php if($esAdmin): ?>
@@ -43,6 +99,12 @@
                 <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
                 <div class="stat-number"><?= $totalLigas ?></div>
                 <div class="stat-label">Ligas</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-sitemap"></i></div>
+                <div class="stat-number"><?= $totalTorneos ?></div>
+                <div class="stat-label">Competencias</div>
             </div>
         <?php endif; ?>
         
@@ -70,6 +132,73 @@
             <div class="stat-label">Balance</div>
         </div>
     </div>
+<?php endif; ?>
+
+<!-- IDENTIDAD DE EQUIPO(S) (entrenador) -->
+<?php if ($esEntrenador && !empty($misEquiposInfo)): ?>
+    <?php foreach ($misEquiposInfo as $eq): ?>
+        <div class="player-id-card mt-3">
+            <span class="player-id-corner tl"></span>
+            <span class="player-id-corner tr"></span>
+            <span class="player-id-corner bl"></span>
+            <span class="player-id-corner br"></span>
+
+            <div class="player-id-nombre"><?= htmlspecialchars(mb_strtoupper($eq['nombre'])) ?></div>
+            <div class="player-id-sub"><?= htmlspecialchars(mb_strtoupper($eq['liga_nombre'] ?? 'Sin liga')) ?></div>
+
+            <div class="player-id-rango">
+                <i class="<?= htmlspecialchars($eq['rango']['icono'] ?? 'fa-solid fa-shield-halved') ?>"></i>
+                <?= htmlspecialchars(mb_strtoupper($eq['rango']['nombre'] ?? 'Sin rango')) ?>
+                <div class="player-id-nivel">NIVEL <?= (int) $eq['nivel'] ?></div>
+            </div>
+
+            <div class="player-id-stats">
+                <div><i class="fa-solid fa-trophy"></i> <?= (int) $eq['totalLogros'] ?> LOGROS</div>
+                <div><i class="fa-solid fa-medal"></i> <?= (int) $eq['totalBadges'] ?> BADGES</div>
+            </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 20px;">
+            <div class="card">
+                <div class="section-header">
+                    <h2>Badges</h2>
+                    <a href="<?= BASE_URL ?>/progreso?vista=equipo&equipo_id=<?= $eq['id'] ?>">Ver todas →</a>
+                </div>
+                <?php if (empty($eq['badges'])): ?>
+                    <p class="text-muted mb-0">Este equipo aún no tiene badges vigentes.</p>
+                <?php else: ?>
+                    <div class="d-flex flex-wrap gap-2">
+                        <?php foreach ($eq['badges'] as $b): ?>
+                            <span class="badge-mini-icon" title="<?= htmlspecialchars($b['nombre']) ?>">
+                                <?php if (!empty($b['imagen'])): ?>
+                                    <img src="<?= BASE_URL . '/' . htmlspecialchars($b['imagen']) ?>" alt="">
+                                <?php else: ?>
+                                    <i class="<?= htmlspecialchars($b['icono']) ?>"></i>
+                                <?php endif; ?>
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div class="card">
+                <div class="section-header">
+                    <h2>Últimos logros</h2>
+                    <a href="<?= BASE_URL ?>/progreso?vista=equipo&equipo_id=<?= $eq['id'] ?>">Ver todos →</a>
+                </div>
+                <?php if (empty($eq['logrosRecientes'])): ?>
+                    <p class="text-muted mb-0">Este equipo aún no ha desbloqueado ningún logro.</p>
+                <?php else: ?>
+                    <?php foreach ($eq['logrosRecientes'] as $l): ?>
+                        <div class="player-logro-reciente">
+                            <i class="<?= htmlspecialchars($l['icono']) ?>"></i>
+                            <?= htmlspecialchars($l['nombre']) ?>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
 <?php endif; ?>
 
 <!-- MATCH (+ EVENTS para admin/entrenador) -->
@@ -164,7 +293,7 @@
     <div class="card">
         <div class="section-header">
             <h2>Últimos resultados</h2>
-            <a href="<?= BASE_URL ?>/partidos">Ver todos →</a>
+            <!-- <a href="<?= BASE_URL ?>/partidos">Ver todos →</a> -->
         </div>
 
         <?php if (!empty($ultimosResultados)): ?>

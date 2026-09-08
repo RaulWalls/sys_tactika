@@ -37,6 +37,8 @@ class LigasController extends Controller
             $ligaModel->create([
                 'nombre' => trim($_POST['nombre']),
                 'temporada' => $_POST['temporada'] ?? null,
+                'fecha_inicio' => $_POST['fecha_inicio'] ?: null,
+                'fecha_fin' => $_POST['fecha_fin'] ?: null,
                 'dias_partido_semana' => $_POST['dias_partido_semana'] ?? 1,
                 'total_equipos' => $_POST['total_equipos'] !== '' ? (int) $_POST['total_equipos'] : null,
                 'permite_calendario_incompleto' => isset($_POST['permite_calendario_incompleto']) ? 1 : 0,
@@ -75,6 +77,8 @@ class LigasController extends Controller
             $ligaModel->update($id, [
                 'nombre' => trim($_POST['nombre']),
                 'temporada' => $_POST['temporada'] ?? null,
+                'fecha_inicio' => $_POST['fecha_inicio'] ?: null,
+                'fecha_fin' => $_POST['fecha_fin'] ?: null,
                 'dias_partido_semana' => $_POST['dias_partido_semana'] ?? 1,
                 'total_equipos' => $_POST['total_equipos'] !== '' ? (int) $_POST['total_equipos'] : null,
                 'permite_calendario_incompleto' => isset($_POST['permite_calendario_incompleto']) ? 1 : 0,

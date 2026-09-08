@@ -7,11 +7,21 @@ class EquiposController extends Controller
         $this->exigirPermiso('ver');
 
         $equipoModel = $this->model('Equipo');
+        $misEquipos = $this->misEquiposIds();
+
+        $porPagina = 15;
+        $pagina = max(1, (int) ($_GET['pagina'] ?? 1));
+
+        $totalEquipos = $equipoModel->contarConLiga($misEquipos);
+        $totalPaginas = max(1, (int) ceil($totalEquipos / $porPagina));
+        $pagina = min($pagina, $totalPaginas);
 
         $this->view('equipos/index', [
             'titulo' => 'Equipos',
             'activeMenu' => 'equipos',
-            'equipos' => $equipoModel->conLiga($this->misEquiposIds()),
+            'equipos' => $equipoModel->conLiga($misEquipos, $porPagina, ($pagina - 1) * $porPagina),
+            'pagina' => $pagina,
+            'totalPaginas' => $totalPaginas,
         ]);
     }
 

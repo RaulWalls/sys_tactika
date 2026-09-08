@@ -43,6 +43,9 @@
                             </td>
                             <td><span class="badge-estado badge-<?= $p['estado'] ?>"><?= ucfirst($p['estado']) ?></span></td>
                             <td class="text-end">
+                                <?php if ($this->tienePermiso('editar', 'JugadoresController') && $p['equipo_id'] && ($_SESSION['usuario_rol'] ?? '') !== 'jugador'): ?>
+                                    <a href="<?= BASE_URL ?>/partidos/eventos/<?= $p['id'] ?>" class="btn btn-sm btn-outline-secondary">Estadísticas</a>
+                                <?php endif; ?>
                                 <?php if ($this->tienePermiso('editar')): ?>
                                     <a href="<?= BASE_URL ?>/partidos/editar/<?= $p['id'] ?>" class="btn btn-sm btn-outline-secondary">Editar</a>
                                 <?php endif; ?>
@@ -61,3 +64,23 @@
         </table>
     </div>
 </div>
+
+<?php if (($totalPaginas ?? 1) > 1): ?>
+    <nav class="mt-3">
+        <ul class="pagination justify-content-end mb-0">
+            <li class="page-item <?= $pagina <= 1 ? 'disabled' : '' ?>">
+                <a class="page-link" href="<?= BASE_URL ?>/partidos?pagina=<?= $pagina - 1 ?>">Anterior</a>
+            </li>
+
+            <?php for ($p = 1; $p <= $totalPaginas; $p++): ?>
+                <li class="page-item <?= $p === $pagina ? 'active' : '' ?>">
+                    <a class="page-link" href="<?= BASE_URL ?>/partidos?pagina=<?= $p ?>"><?= $p ?></a>
+                </li>
+            <?php endfor; ?>
+
+            <li class="page-item <?= $pagina >= $totalPaginas ? 'disabled' : '' ?>">
+                <a class="page-link" href="<?= BASE_URL ?>/partidos?pagina=<?= $pagina + 1 ?>">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
+<?php endif; ?>

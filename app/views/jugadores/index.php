@@ -1,12 +1,35 @@
+<?php
+    $esJugador = ($_SESSION['usuario_rol'] ?? '') === 'jugador'; 
+    $esEntrenador = ($_SESSION['usuario_rol'] ?? '') === 'entrenador'; 
+    $esAdmin = ($_SESSION['usuario_rol'] ?? '') === 'administrador';
+?>
+
 <div class="welcome d-flex align-items-center justify-content-between">
     <div>
         <h1>Jugadores</h1>
-        <p>Plantilla registrada del equipo.</p>
+        <p>Plantilla registrada de <?= htmlspecialchars($nombreEquipo ?? '') ?>.</p>
     </div>
     <?php if ($this->tienePermiso('crear')): ?>
         <a href="<?= BASE_URL ?>/jugadores/crear" class="btn btn-primary">+ Nuevo jugador</a>
     <?php endif; ?>
 </div>
+    <?php if ($esAdmin): ?>
+        <form method="get" action="<?= BASE_URL ?>/jugadores">
+            <div class="col-md-3">
+                <select name="equipo_id" class="form-select" onchange="this.form.submit()">
+                    <option value="">Todos los equipos</option>
+                    <?php foreach ($equipos as $e): ?>
+                        <option value="<?= $e['id'] ?>" <?= $equipoSeleccionado === (int) $e['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($e['nombre']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </form>
+        <br>
+    <?php else: ?>
+        <p class="text-muted">Equipo: <strong><?= htmlspecialchars($nombreEquipo ?: 'Sin equipo asignado') ?></strong></p>
+    <?php endif; ?>
 
 <div class="card">
     <div class="table-responsive">
@@ -65,3 +88,26 @@
         </table>
     </div>
 </div>
+
+<?php if (($totalPaginas ?? 1) > 1): ?>
+    <nav class="mt-3">
+        <ul class="pagination justify-content-end mb-0">
+            <?php
+                $queryBase = $equipoSeleccionado ? ['equipo_id' => $equipoSeleccionado] : [];
+            ?>
+            <li class="page-item <?= $pagina <= 1 ? 'disabled' : '' ?>">
+                <a class="page-link" href="<?= BASE_URL ?>/jugadores?<?= http_build_query($queryBase + ['pagina' => $pagina - 1]) ?>">Anterior</a>
+            </li>
+
+            <?php for ($p = 1; $p <= $totalPaginas; $p++): ?>
+                <li class="page-item <?= $p === $pagina ? 'active' : '' ?>">
+                    <a class="page-link" href="<?= BASE_URL ?>/jugadores?<?= http_build_query($queryBase + ['pagina' => $p]) ?>"><?= $p ?></a>
+                </li>
+            <?php endfor; ?>
+
+            <li class="page-item <?= $pagina >= $totalPaginas ? 'disabled' : '' ?>">
+                <a class="page-link" href="<?= BASE_URL ?>/jugadores?<?= http_build_query($queryBase + ['pagina' => $pagina + 1]) ?>">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
+<?php endif; ?>

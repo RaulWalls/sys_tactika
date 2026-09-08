@@ -22,6 +22,17 @@
             </div>
 
             <div class="col-md-3">
+                <label class="form-label">Fecha de inicio</label>
+                <input type="date" name="fecha_inicio" class="form-control" value="<?= htmlspecialchars($liga['fecha_inicio'] ?? '') ?>">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Fecha de fin</label>
+                <input type="date" name="fecha_fin" class="form-control" value="<?= htmlspecialchars($liga['fecha_fin'] ?? '') ?>">
+                <div class="form-text">Define la temporada para el historial de badges por nivel.</div>
+            </div>
+
+            <div class="col-md-3">
                 <label class="form-label">Días de partido a la semana</label>
                 <select name="dias_partido_semana" class="form-select">
                     <?php for ($i = 1; $i <= 7; $i++): ?>

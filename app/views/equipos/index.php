@@ -51,3 +51,23 @@
         </table>
     </div>
 </div>
+
+<?php if (($totalPaginas ?? 1) > 1): ?>
+    <nav class="mt-3">
+        <ul class="pagination justify-content-end mb-0">
+            <li class="page-item <?= $pagina <= 1 ? 'disabled' : '' ?>">
+                <a class="page-link" href="<?= BASE_URL ?>/equipos?pagina=<?= $pagina - 1 ?>">Anterior</a>
+            </li>
+
+            <?php for ($p = 1; $p <= $totalPaginas; $p++): ?>
+                <li class="page-item <?= $p === $pagina ? 'active' : '' ?>">
+                    <a class="page-link" href="<?= BASE_URL ?>/equipos?pagina=<?= $p ?>"><?= $p ?></a>
+                </li>
+            <?php endfor; ?>
+
+            <li class="page-item <?= $pagina >= $totalPaginas ? 'disabled' : '' ?>">
+                <a class="page-link" href="<?= BASE_URL ?>/equipos?pagina=<?= $pagina + 1 ?>">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
+<?php endif; ?>

@@ -45,7 +45,7 @@ class Jugador extends Model
      * Si se pasa $equipoIds, solo incluye jugadores que pertenezcan a
      * alguno de esos equipos (para el acotado por rol).
      */
-    public function conEquipo(?array $equipoIds = null): array
+    public function conEquipo(?array $equipoIds = null, ?int $limite = null, int $offset = 0): array
     {
         if ($equipoIds !== null && empty($equipoIds)) {
             return [];
@@ -68,10 +68,38 @@ class Jugador extends Model
 
         $sql .= " GROUP BY j.id ORDER BY j.apellido ASC";
 
+        if ($limite !== null) {
+            $sql .= ' LIMIT ' . (int) $limite . ' OFFSET ' . (int) $offset;
+        }
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
 
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Total de jugadores acotado por equipo(s), para el paginado de conEquipo().
+     */
+    public function contarConEquipo(?array $equipoIds = null): int
+    {
+        if ($equipoIds !== null && empty($equipoIds)) {
+            return 0;
+        }
+
+        $sql = 'SELECT COUNT(*) FROM jugadores j';
+        $params = [];
+
+        if ($equipoIds !== null) {
+            $in = implode(',', array_fill(0, count($equipoIds), '?'));
+            $sql .= " WHERE j.id IN (SELECT jugador_id FROM jugador_equipos WHERE equipo_id IN ({$in}))";
+            $params = array_values($equipoIds);
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return (int) $stmt->fetchColumn();
     }
 
     public function equiposDe(int $jugadorId): array

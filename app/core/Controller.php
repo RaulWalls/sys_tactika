@@ -121,4 +121,9 @@ abstract class Controller
     {
         $_SESSION['flash_error'] = $mensaje;
     }
+
+    protected function flashExito(string $mensaje): void
+    {
+        $_SESSION['flash_exito'] = $mensaje;
+    }
 }

@@ -1,3 +1,17 @@
+<?php
+    $categoriasRendimiento = [
+        'ofensiva' => 'Ofensivas',
+        'defensiva' => 'Defensivas',
+        'disciplina' => 'Disciplina',
+        'portero' => 'Para porteros',
+    ];
+
+    $rendimientoAgrupado = [];
+    foreach ($rendimiento as $r) {
+        $rendimientoAgrupado[$r['categoria']][] = $r;
+    }
+?>
+
 <div class="welcome d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center gap-3">
         <div class="team-logo detalle-logo">
@@ -92,28 +106,35 @@
             <?php endif; ?>
         </div>
 
-        <div class="row g-3">
-            <?php $esPortero = ($jugador['posicion_nombre'] ?? '') === 'Portero'; ?>
-            <!-- "Atajadas" solo aplica al portero; el resto de posiciones se la salta -->
-            <?php foreach ($rendimiento as $r): ?>
-                <?php if ($r['nombre'] !== 'Atajadas' || $esPortero): ?>
+        <?php $esPortero = ($jugador['posicion_nombre'] ?? '') === 'Portero'; ?>
+
+        <!-- "Para porteros" solo aplica al portero; el resto de posiciones se la salta -->
+        <?php foreach ($categoriasRendimiento as $categoriaKey => $categoriaLabel): ?>
+            <?php if ($categoriaKey === 'portero' && !$esPortero): ?>
+                <?php continue; ?>
+            <?php endif; ?>
+            <?php if (empty($rendimientoAgrupado[$categoriaKey])): ?>
+                <?php continue; ?>
+            <?php endif; ?>
+
+            <h6 class="detalle-sub mt-3 mb-2"><?= $categoriaLabel ?></h6>
+            <div class="row g-3">
+                <?php foreach ($rendimientoAgrupado[$categoriaKey] as $r): ?>
                     <div class="col-md-6">
                         <span class="detalle-label"><?= htmlspecialchars($r['nombre']) ?></span>
-                        <div class="detalle-valor"><?= (int) $r['valor'] ?></div>
+                        <div class="detalle-valor">
+                            <?php if ($r['nombre'] === 'Amarillas'): ?>
+                                <span class="badge-estado badge-tarjeta-amarilla"><?= (int) $r['valor'] ?></span>
+                            <?php elseif ($r['nombre'] === 'Rojas'): ?>
+                                <span class="badge-estado badge-tarjeta-roja"><?= (int) $r['valor'] ?></span>
+                            <?php else: ?>
+                                <?= (int) $r['valor'] ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                <?php endif; ?>
-            <?php endforeach; ?>
-
-            <div class="col-md-6">
-                <span class="detalle-label">Amonestaciones</span>
-                <div class="detalle-valor">
-                    T. A.:
-                    <span class="badge-estado badge-tarjeta-amarilla"><?= $jugador_amonestado['tarjeta_amarilla'] ?? 0 ?></span><br>
-                    T. R.:
-                    <span class="badge-estado badge-tarjeta-roja"><?= $jugador_amonestado['tarjeta_roja'] ?? 0 ?></span>
-                </div>
+                <?php endforeach; ?>
             </div>
-        </div>
+        <?php endforeach; ?>
     </div>
 
     <!-- ATRIBUTOS -->
@@ -183,16 +204,28 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row g-3">
-                        <?php foreach ($rendimiento as $r): ?>
-                            <?php if ($r['nombre'] !== 'Atajadas' || $esPortero): ?>
+                    <?php foreach ($categoriasRendimiento as $categoriaKey => $categoriaLabel): ?>
+                        <?php if ($categoriaKey === 'portero' && !$esPortero): ?>
+                            <?php continue; ?>
+                        <?php endif; ?>
+                        <?php if (empty($rendimientoAgrupado[$categoriaKey])): ?>
+                            <?php continue; ?>
+                        <?php endif; ?>
+
+                        <h6 class="detalle-sub mt-2 mb-2"><?= $categoriaLabel ?></h6>
+                        <div class="row g-3 mb-2">
+                            <?php foreach ($rendimientoAgrupado[$categoriaKey] as $r): ?>
+                                <?php $autoSincronizado = in_array($r['nombre'], ['Goles', 'Asistencias', 'Minutos', 'Partidos'], true); ?>
                                 <div class="col-6">
                                     <label class="form-label"><?= htmlspecialchars($r['nombre']) ?> (<?= htmlspecialchars($r['abreviatura']) ?>)</label>
-                                    <input type="number" name="valor[<?= $r['estadistica_id'] ?>]" class="form-control" min="0" value="<?= (int) $r['valor'] ?>">
+                                    <input type="number" name="valor[<?= $r['estadistica_id'] ?>]" class="form-control" min="0" value="<?= (int) $r['valor'] ?>" <?= $autoSincronizado ? 'disabled' : '' ?>>
+                                    <?php if ($autoSincronizado): ?>
+                                        <div class="form-text">Se actualiza automáticamente desde Estadísticas del partido.</div>
+                                    <?php endif; ?>
                                 </div>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>

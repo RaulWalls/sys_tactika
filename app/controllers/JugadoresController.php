@@ -7,11 +7,41 @@ class JugadoresController extends Controller
         $this->exigirPermiso('ver');
 
         $jugadorModel = $this->model('Jugador');
+        $equipoModel = $this->model('Equipo');
+        $misEquipos = $this->misEquiposIds();
+        $equipoSeleccionado = null;
+
+        $porPagina = 15;
+        $pagina = max(1, (int) ($_GET['pagina'] ?? 1));
+
+        if ($this->esAdmin()) {
+            $equipos = $equipoModel->conLiga();
+            $equipoSeleccionado = !empty($_GET['equipo_id']) ? (int) $_GET['equipo_id'] : null;
+            $filtroEquipos = $equipoSeleccionado ? [$equipoSeleccionado] : null;
+            $nombreEquipo = $equipoSeleccionado
+                ? (array_column($equipos, 'nombre', 'id')[$equipoSeleccionado] ?? '')
+                : 'todos los equipos';
+        } else {
+            $equipos = $equipoModel->conLiga($misEquipos);
+            $filtroEquipos = $misEquipos;
+            $nombreEquipo = implode(', ', array_column($equipos, 'nombre'));
+        }
+
+        $totalJugadores = $jugadorModel->contarConEquipo($filtroEquipos);
+        $totalPaginas = max(1, (int) ceil($totalJugadores / $porPagina));
+        $pagina = min($pagina, $totalPaginas);
+
+        $jugadores = $jugadorModel->conEquipo($filtroEquipos, $porPagina, ($pagina - 1) * $porPagina);
 
         $this->view('jugadores/index', [
             'titulo' => 'Jugadores',
             'activeMenu' => 'jugadores',
-            'jugadores' => $jugadorModel->conEquipo($this->misEquiposIds()),
+            'jugadores' => $jugadores,
+            'equipos' => $equipos,
+            'equipoSeleccionado' => $equipoSeleccionado,
+            'nombreEquipo' => $nombreEquipo,
+            'pagina' => $pagina,
+            'totalPaginas' => $totalPaginas,
         ]);
     }
 
@@ -217,7 +247,7 @@ class JugadoresController extends Controller
 
             if ($miJugadorId !== $id) {
                 $this->flashError('No puedes ver el detalle de otro jugador.');
-                $this->redirect($miJugadorId > 0 ? 'jugadores/detalle/' . $miJugadorId : 'dashboard');
+                $this->redirect('jugadores');
             }
 
             return;

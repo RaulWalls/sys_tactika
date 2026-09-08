@@ -8,7 +8,7 @@ class Equipo extends Model
      * Lista de equipos. Si se pasa $ids (acotado por rol), solo incluye
      * esos equipos; null significa "sin restricción" (administrador).
      */
-    public function conLiga(?array $ids = null): array
+    public function conLiga(?array $ids = null, ?int $limite = null, int $offset = 0): array
     {
         if ($ids !== null && empty($ids)) {
             return [];
@@ -28,10 +28,50 @@ class Equipo extends Model
 
         $sql .= " ORDER BY e.id DESC";
 
+        if ($limite !== null) {
+            $sql .= ' LIMIT ' . (int) $limite . ' OFFSET ' . (int) $offset;
+        }
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
 
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Total de equipos acotado por ids, para el paginado de conLiga().
+     */
+    public function contarConLiga(?array $ids = null): int
+    {
+        if ($ids !== null && empty($ids)) {
+            return 0;
+        }
+
+        $sql = 'SELECT COUNT(*) FROM equipos e';
+        $params = [];
+
+        if ($ids !== null) {
+            $in = implode(',', array_fill(0, count($ids), '?'));
+            $sql .= " WHERE e.id IN ({$in})";
+            $params = array_values($ids);
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * Busca un equipo registrado por nombre exacto (usado para resolver si
+     * el "rival" de un partido es en realidad un equipo propio registrado).
+     */
+    public function porNombre(string $nombre): ?array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM equipos WHERE nombre = :nombre LIMIT 1');
+        $stmt->execute(['nombre' => $nombre]);
+
+        return $stmt->fetch() ?: null;
     }
 
     public function porLiga(int $ligaId): array

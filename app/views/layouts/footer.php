@@ -14,10 +14,26 @@
             icon: 'error',
             title: 'Acceso no permitido',
             text: <?= json_encode($_SESSION['flash_error']) ?>,
+            background: getComputedStyle(document.body).getPropertyValue('--surface').trim() || '#ffffff',
+            color: getComputedStyle(document.body).getPropertyValue('--text').trim() || '#1f2937',
             confirmButtonColor: getComputedStyle(document.body).getPropertyValue('--primary').trim() || '#5b3cc4'
         });
     </script>
     <?php unset($_SESSION['flash_error']); ?>
+<?php endif; ?>
+
+<?php if (!empty($_SESSION['flash_exito'])): ?>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '¡Felicidades!',
+            html: <?= json_encode($_SESSION['flash_exito']) ?>,
+            background: getComputedStyle(document.body).getPropertyValue('--surface').trim() || '#ffffff',
+            color: getComputedStyle(document.body).getPropertyValue('--text').trim() || '#1f2937',
+            confirmButtonColor: getComputedStyle(document.body).getPropertyValue('--primary').trim() || '#5b3cc4'
+        });
+    </script>
+    <?php unset($_SESSION['flash_exito']); ?>
 <?php endif; ?>
 </body>
 </html>

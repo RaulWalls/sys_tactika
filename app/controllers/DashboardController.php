@@ -23,6 +23,32 @@ class DashboardController extends Controller
         if ($rol === 'jugador') {
             // Para la validación de "sin partidos pendientes" del próximo partido.
             $data['totalEquipos'] = count($this->model('Equipo')->conLiga($misEquipos));
+
+            $miJugadorId = (int) ($_SESSION['usuario_jugador_id'] ?? 0);
+            $data['totalGoles'] = $miJugadorId ? $this->model('JugadorEstadistica')->golesDe($miJugadorId) : 0;
+            $data['totalAsistencias'] = $miJugadorId ? $this->model('JugadorEstadistica')->asistenciasDe($miJugadorId) : 0;
+            $data['amonestaciones'] = $miJugadorId
+                ? $this->model('JugadorAmonestaciones')->porJugador($miJugadorId)
+                : ['tarjeta_amarilla' => 0, 'tarjeta_roja' => 0];
+
+            $data['miJugador'] = $miJugadorId ? $this->model('Jugador')->conDetalle($miJugadorId) : null;
+
+            if ($miJugadorId) {
+                $nivel = $this->model('JugadorRango')->nivelDe($miJugadorId);
+                $data['miNivel'] = $nivel;
+                $data['miRango'] = $this->model('CatRango')->paraNivel($nivel);
+                $data['miTotalLogros'] = $this->model('JugadorLogro')->contarDesbloqueados($miJugadorId);
+                $data['miTotalBadges'] = $this->model('JugadorBadge')->contarObtenidas($miJugadorId);
+                $data['misBadges'] = $this->model('JugadorBadge')->obtenidas($miJugadorId, 6);
+                $data['misLogrosRecientes'] = $this->model('JugadorLogro')->recientes($miJugadorId, 4);
+            } else {
+                $data['miNivel'] = 0;
+                $data['miRango'] = null;
+                $data['miTotalLogros'] = 0;
+                $data['miTotalBadges'] = 0;
+                $data['misBadges'] = [];
+                $data['misLogrosRecientes'] = [];
+            }
         } else {
             $equipoModel = $this->model('Equipo');
             $jugadorModel = $this->model('Jugador');
@@ -34,6 +60,31 @@ class DashboardController extends Controller
 
             if ($rol === 'administrador') {
                 $data['totalLigas'] = $this->model('Liga')->totalLigas();
+                $data['totalTorneos'] = $this->model('Torneo')->totalTorneos();
+            }
+
+            // Entrenador: tarjeta de identidad + logros/badges de cada
+            // equipo a su cargo (puede tener varios).
+            if ($rol === 'entrenador') {
+                $rangoModel = $this->model('EquipoRango');
+                $catRangoModel = $this->model('CatRango');
+                $logroModel = $this->model('EquipoLogro');
+                $badgeModel = $this->model('EquipoBadge');
+
+                $misEquiposInfo = $equipoModel->conLiga($misEquipos);
+
+                foreach ($misEquiposInfo as &$eq) {
+                    $nivel = $rangoModel->nivelDe((int) $eq['id']);
+                    $eq['nivel'] = $nivel;
+                    $eq['rango'] = $catRangoModel->paraNivel($nivel);
+                    $eq['totalLogros'] = $logroModel->contarDesbloqueados((int) $eq['id']);
+                    $eq['totalBadges'] = $badgeModel->contarObtenidas((int) $eq['id']);
+                    $eq['badges'] = $badgeModel->obtenidas((int) $eq['id'], 6);
+                    $eq['logrosRecientes'] = $logroModel->recientes((int) $eq['id'], 4);
+                }
+                unset($eq);
+
+                $data['misEquiposInfo'] = $misEquiposInfo;
             }
         }
 

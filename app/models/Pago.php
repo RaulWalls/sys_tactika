@@ -38,8 +38,12 @@ class Pago extends Model
         ];
     }
 
-    public function conJugador(): array
+    public function conJugador(?array $equipoIds = null, ?int $limite = null, int $offset = 0): array
     {
+        if ($equipoIds !== null && empty($equipoIds)) {
+            return [];
+        }
+
         $sql = "SELECT p.*,
                        j.nombre AS jugador_nombre, j.apellido AS jugador_apellido,
                        e.nombre AS equipo_nombre,
@@ -49,9 +53,49 @@ class Pago extends Model
                 LEFT JOIN jugadores j ON j.id = p.jugador_id
                 LEFT JOIN equipos e ON e.id = p.equipo_id
                 LEFT JOIN cat_pagos c ON c.id = p.concepto_id
-                LEFT JOIN cat_metodo_pagos m ON m.id = p.metodo_pago_id
-                ORDER BY p.fecha DESC";
+                LEFT JOIN cat_metodo_pagos m ON m.id = p.metodo_pago_id";
 
-        return $this->db->query($sql)->fetchAll();
+        $params = [];
+
+        if ($equipoIds !== null) {
+            $in = implode(',', array_fill(0, count($equipoIds), '?'));
+            $sql .= " WHERE p.equipo_id IN ({$in})";
+            $params = array_values($equipoIds);
+        }
+
+        $sql .= ' ORDER BY p.fecha DESC';
+
+        if ($limite !== null) {
+            $sql .= ' LIMIT ' . (int) $limite . ' OFFSET ' . (int) $offset;
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Total de pagos acotado por equipo(s), para el paginado de conJugador().
+     */
+    public function contarConJugador(?array $equipoIds = null): int
+    {
+        if ($equipoIds !== null && empty($equipoIds)) {
+            return 0;
+        }
+
+        $sql = 'SELECT COUNT(*) FROM pagos p';
+        $params = [];
+
+        if ($equipoIds !== null) {
+            $in = implode(',', array_fill(0, count($equipoIds), '?'));
+            $sql .= " WHERE p.equipo_id IN ({$in})";
+            $params = array_values($equipoIds);
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+
+        return (int) $stmt->fetchColumn();
     }
 }

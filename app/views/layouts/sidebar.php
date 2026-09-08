@@ -44,6 +44,13 @@
                 </a>
             <?php endif; ?>
 
+            <?php if ($this->tienePermiso('ver', 'TorneosController')): ?>
+                <a href="<?= BASE_URL ?>/torneos" class="menu-item <?= ($activeMenu ?? '') === 'torneos' ? 'active' : '' ?>">
+                    <span class="menu-icon"><i class="fa-solid fa-sitemap"></i></span>
+                    <span>Torneos</span>
+                </a>
+            <?php endif; ?>
+
             <?php if ($this->tienePermiso('ver', 'PagosController')): ?>
                 <a href="<?= BASE_URL ?>/pagos" class="menu-item <?= ($activeMenu ?? '') === 'pagos' ? 'active' : '' ?>">
                     <span class="menu-icon"><i class="fa-solid fa-sack-dollar"></i></span>
@@ -51,10 +58,24 @@
                 </a>
             <?php endif; ?>
 
+            <?php if ($this->tienePermiso('ver', 'ProgresoController')): ?>
+                <a href="<?= BASE_URL ?>/progreso" class="menu-item <?= ($activeMenu ?? '') === 'progreso' ? 'active' : '' ?>">
+                    <span class="menu-icon"><i class="fa-solid fa-ranking-star"></i></span>
+                    <span>Progreso</span>
+                </a>
+            <?php endif; ?>
+
             <?php if ($this->tienePermiso('ver', 'ReportesController')): ?>
                 <a href="<?= BASE_URL ?>/reportes" class="menu-item <?= ($activeMenu ?? '') === 'reportes' ? 'active' : '' ?>">
                     <span class="menu-icon"><i class="fa-solid fa-chart-column"></i></span>
                     <span>Reportes</span>
+                </a>
+            <?php endif; ?>
+
+            <?php if ($this->tienePermiso('ver', 'HistorialController')): ?>
+                <a href="<?= BASE_URL ?>/historial" class="menu-item <?= ($activeMenu ?? '') === 'historial' ? 'active' : '' ?>">
+                    <span class="menu-icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                    <span>Historial</span>
                 </a>
             <?php endif; ?>
         </nav>

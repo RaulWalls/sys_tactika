@@ -7,12 +7,31 @@ class PagosController extends Controller
         $this->exigirPermiso('ver');
 
         $pagoModel = $this->model('Pago');
+        $equipoSeleccionado = null;
+        $filtroEquipos = null;
+
+        $porPagina = 15;
+        $pagina = max(1, (int) ($_GET['pagina'] ?? 1));
+
+        if ($this->esAdmin()) {
+            $equipos = $this->model('Equipo')->conLiga();
+            $equipoSeleccionado = !empty($_GET['equipo_id']) ? (int) $_GET['equipo_id'] : null;
+            $filtroEquipos = $equipoSeleccionado ? [$equipoSeleccionado] : null;
+        }
+
+        $totalPagos = $pagoModel->contarConJugador($filtroEquipos);
+        $totalPaginas = max(1, (int) ceil($totalPagos / $porPagina));
+        $pagina = min($pagina, $totalPaginas);
 
         $this->view('pagos/index', [
             'titulo' => 'Pagos',
             'activeMenu' => 'pagos',
-            'pagos' => $pagoModel->conJugador(),
-            'resumenFinanciero' => $pagoModel->resumen(),
+            'equipos' => $equipos ?? [],
+            'equipoSeleccionado' => $equipoSeleccionado,
+            'pagos' => $pagoModel->conJugador($filtroEquipos, $porPagina, ($pagina - 1) * $porPagina),
+            'resumenFinanciero' => $pagoModel->resumen($filtroEquipos),
+            'pagina' => $pagina,
+            'totalPaginas' => $totalPaginas,
         ]);
     }
 
