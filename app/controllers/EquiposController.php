@@ -99,7 +99,7 @@ class EquiposController extends Controller
     public function detalle(int $id): void
     {
         $this->exigirPermiso('ver');
-        $this->verificarAccesoEquipo($id);
+        $this->verificarVisualizacionEquipo($id);
 
         $equipoModel = $this->model('Equipo');
         $jugadorModel = $this->model('Jugador');
@@ -142,6 +142,23 @@ class EquiposController extends Controller
         if ($ids !== null && !in_array($id, $ids, true)) {
             http_response_code(403);
             die('No tienes acceso a este equipo.');
+        }
+    }
+
+    /**
+     * Igual que verificarAccesoEquipo(), pero para la sola visualización del
+     * detalle: en vez de un 403 duro, redirige con el mismo aviso amigable
+     * (SweetAlert) que usa JugadoresController cuando un jugador intenta ver
+     * el detalle de otro jugador. Aplica tanto a jugador como a entrenador,
+     * ya que misEquiposIds() solo acota a esos dos roles.
+     */
+    private function verificarVisualizacionEquipo(int $id): void
+    {
+        $ids = $this->misEquiposIds();
+
+        if ($ids !== null && !in_array($id, $ids, true)) {
+            $this->flashError('No puedes ver el detalle de otro equipo.');
+            $this->volverAOrigen();
         }
     }
 

@@ -52,7 +52,8 @@ class TorneosController extends Controller
                 return;
             }
 
-            $torneoId = $this->generarTorneo($nombre, $ligaId, $totalEquipos, $fechaInicio, $fechaFin, $tabla);
+            $imagen = $this->subirImagen($_FILES['imagen'] ?? null);
+            $torneoId = $this->generarTorneo($nombre, $ligaId, $totalEquipos, $fechaInicio, $fechaFin, $tabla, $imagen);
 
             $this->redirect('torneos/detalle/' . $torneoId);
             return;
@@ -62,6 +63,55 @@ class TorneosController extends Controller
             'titulo' => 'Nuevo torneo',
             'activeMenu' => 'torneos',
             'ligas' => $ligaModel->all('nombre ASC'),
+        ]);
+    }
+
+    /**
+     * Solo permite editar nombre, fechas e imagen: la liga y el tamaño del
+     * bracket ya no se pueden cambiar una vez generado el torneo.
+     */
+    public function editar(int $id): void
+    {
+        $this->exigirPermiso('editar');
+
+        $torneoModel = $this->model('Torneo');
+        $torneo = $torneoModel->find($id);
+
+        if (!$torneo) {
+            http_response_code(404);
+            die('Torneo no encontrado');
+        }
+
+        if ($this->isPost()) {
+            $nombre = trim($_POST['nombre'] ?? '');
+            $fechaInicio = $_POST['fecha_inicio'] ?? '';
+            $fechaFin = $_POST['fecha_fin'] ?? '';
+
+            if ($nombre === '' || !$fechaInicio || !$fechaFin || $fechaFin < $fechaInicio) {
+                $this->view('torneos/editar', [
+                    'titulo' => 'Editar torneo',
+                    'activeMenu' => 'torneos',
+                    'torneo' => ['id' => $id] + $torneo,
+                    'error' => 'Completa el nombre y verifica que la fecha de fin no sea anterior a la de inicio.',
+                ]);
+                return;
+            }
+
+            $torneoModel->update($id, [
+                'nombre' => $nombre,
+                'imagen' => $this->subirImagen($_FILES['imagen'] ?? null, $torneo['imagen'] ?? null),
+                'fecha_inicio' => $fechaInicio,
+                'fecha_fin' => $fechaFin,
+            ]);
+
+            $this->redirect('torneos/detalle/' . $id);
+            return;
+        }
+
+        $this->view('torneos/editar', [
+            'titulo' => 'Editar torneo',
+            'activeMenu' => 'torneos',
+            'torneo' => $torneo,
         ]);
     }
 
@@ -88,7 +138,7 @@ class TorneosController extends Controller
      * rondas posteriores a la primera quedan "por definir" hasta que se
      * resuelvan sus partidos alimentadores.
      */
-    private function generarTorneo(string $nombre, int $ligaId, int $totalEquipos, string $fechaInicio, string $fechaFin, array $tabla): int
+    private function generarTorneo(string $nombre, int $ligaId, int $totalEquipos, string $fechaInicio, string $fechaFin, array $tabla, ?string $imagen = null): int
     {
         $torneoModel = $this->model('Torneo');
         $torneoEquipoModel = $this->model('TorneoEquipo');
@@ -99,6 +149,7 @@ class TorneosController extends Controller
 
         $torneoId = $torneoModel->create([
             'nombre' => $nombre,
+            'imagen' => $imagen,
             'liga_id' => $ligaId,
             'total_equipos' => $totalEquipos,
             'fecha_inicio' => $fechaInicio,
@@ -307,14 +358,70 @@ class TorneosController extends Controller
     {
         $this->exigirPermiso('eliminar');
 
+        $torneoModel = $this->model('Torneo');
+        $torneo = $torneoModel->find($id);
+
+        if ($torneo && !empty($torneo['imagen'])) {
+            $this->borrarImagen($torneo['imagen']);
+        }
+
         $this->model('Partido')->eliminarDeTorneo($id);
 
         $stmt = Database::getConnection()->prepare('DELETE FROM torneo_equipos WHERE torneo_id = :id');
         $stmt->execute(['id' => $id]);
 
-        $this->model('Torneo')->delete($id);
+        $torneoModel->delete($id);
 
         $this->redirect('torneos');
+    }
+
+    private function subirImagen(?array $file, ?string $actual = null): ?string
+    {
+        if (empty($file) || $file['error'] === UPLOAD_ERR_NO_FILE) {
+            return $actual;
+        }
+
+        if ($file['error'] !== UPLOAD_ERR_OK || $file['size'] > 3 * 1024 * 1024) {
+            return $actual;
+        }
+
+        $extensionesPermitidas = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            'image/gif' => 'gif',
+        ];
+
+        $tipo = mime_content_type($file['tmp_name']);
+
+        if (!isset($extensionesPermitidas[$tipo])) {
+            return $actual;
+        }
+
+        if (!is_dir(UPLOADS_PATH_TORNEOS)) {
+            mkdir(UPLOADS_PATH_TORNEOS, 0755, true);
+        }
+
+        $nombreArchivo = 'torneo_' . uniqid() . '.' . $extensionesPermitidas[$tipo];
+
+        if (!move_uploaded_file($file['tmp_name'], UPLOADS_PATH_TORNEOS . '/' . $nombreArchivo)) {
+            return $actual;
+        }
+
+        if ($actual) {
+            $this->borrarImagen($actual);
+        }
+
+        return 'uploads/torneos/' . $nombreArchivo;
+    }
+
+    private function borrarImagen(string $rutaRelativa): void
+    {
+        $ruta = PUBLIC_PATH . '/' . ltrim($rutaRelativa, '/');
+
+        if (str_starts_with($rutaRelativa, 'uploads/torneos/') && is_file($ruta)) {
+            unlink($ruta);
+        }
     }
 
     /**

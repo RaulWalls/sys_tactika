@@ -41,6 +41,14 @@ class DashboardController extends Controller
                 $data['miTotalBadges'] = $this->model('JugadorBadge')->contarObtenidas($miJugadorId);
                 $data['misBadges'] = $this->model('JugadorBadge')->obtenidas($miJugadorId, 6);
                 $data['misLogrosRecientes'] = $this->model('JugadorLogro')->recientes($miJugadorId, 4);
+
+                $data['misAtributos'] = $this->model('JugadorAtributo')->porJugador($miJugadorId);
+
+                // Valoración estilo "carta": 50 de base + el promedio de los
+                // atributos (-20 a 20), acotada entre 0 y 99.
+                $valores = array_column($data['misAtributos'], 'valor');
+                $promedio = $valores ? array_sum($valores) / count($valores) : 0;
+                $data['miValoracion'] = (int) max(0, min(99, round(50 + $promedio)));
             } else {
                 $data['miNivel'] = 0;
                 $data['miRango'] = null;
@@ -48,6 +56,8 @@ class DashboardController extends Controller
                 $data['miTotalBadges'] = 0;
                 $data['misBadges'] = [];
                 $data['misLogrosRecientes'] = [];
+                $data['misAtributos'] = [];
+                $data['miValoracion'] = 50;
             }
         } else {
             $equipoModel = $this->model('Equipo');

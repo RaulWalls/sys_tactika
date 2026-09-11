@@ -68,7 +68,7 @@ class PagosController extends Controller
             'activeMenu' => 'pagos',
             'jugadores' => $jugadorModel->all(),
             'equipos' => $equipoModel->all(),
-            'conceptos' => $catPagoModel->all('nombre ASC'),
+            'conceptos' => $catPagoModel->activos(),
             'metodosPago' => $catMetodoPagoModel->all('nombre ASC'),
             'observaciones' => $_POST['observaciones'] ?? null,
         ]);
@@ -102,13 +102,25 @@ class PagosController extends Controller
         $catPagoModel = $this->model('CatPago');
         $catMetodoPagoModel = $this->model('CatMetodoPago');
 
+        $pago = $pagoModel->find($id);
+        $conceptos = $catPagoModel->activos();
+
+        // Si el concepto ya asignado quedó inactivo, se mantiene visible
+        // en el select para no perder el dato del pago existente.
+        if ($pago && $pago['concepto_id'] && !in_array($pago['concepto_id'], array_column($conceptos, 'id'))) {
+            $conceptoActual = $catPagoModel->find((int) $pago['concepto_id']);
+            if ($conceptoActual) {
+                $conceptos[] = $conceptoActual;
+            }
+        }
+
         $this->view('pagos/editar', [
             'titulo' => 'Editar pago',
             'activeMenu' => 'pagos',
-            'pago' => $pagoModel->find($id),
+            'pago' => $pago,
             'jugadores' => $jugadorModel->all(),
             'equipos' => $equipoModel->all(),
-            'conceptos' => $catPagoModel->all('nombre ASC'),
+            'conceptos' => $conceptos,
             'metodosPago' => $catMetodoPagoModel->all('nombre ASC'),
             'observaciones' => $_POST['observaciones'] ?? null,
         ]);

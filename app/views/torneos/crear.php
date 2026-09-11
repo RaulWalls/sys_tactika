@@ -8,9 +8,18 @@
 <?php endif; ?>
 
 <div class="card form-card">
-    <form method="post" action="<?= BASE_URL ?>/torneos/crear">
+    <form method="post" action="<?= BASE_URL ?>/torneos/crear" enctype="multipart/form-data">
 
         <div class="row g-3">
+            <div class="col-md-12">
+                <label class="form-label">Imagen del torneo</label>
+                <div class="escudo-preview" id="escudo-preview">
+                    <span class="escudo-placeholder-icon" id="escudo-placeholder"><i class="fa-solid fa-sitemap"></i></span>
+                    <img id="escudo-preview-img" src="" alt="Imagen" style="display:none;">
+                </div>
+                <input type="file" name="imagen" accept="image/*" class="form-control" data-preview-img="escudo-preview-img" data-preview-placeholder="escudo-placeholder">
+            </div>
+
             <div class="col-md-12">
                 <label class="form-label">Nombre del torneo</label>
                 <input type="text" name="nombre" class="form-control" placeholder="Copa Táctika 2026" value="<?= htmlspecialchars($torneo['nombre'] ?? '') ?>" required>

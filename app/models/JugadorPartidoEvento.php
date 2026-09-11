@@ -140,4 +140,39 @@ class JugadorPartidoEvento extends Model
 
         return (int) $stmt->fetchColumn();
     }
+
+    /**
+     * Goleadores (jugadores con más goles anotados) dentro de una liga o
+     * un torneo, para el reporte de goleo. El equipo mostrado es el
+     * primero vinculado al jugador (aproximado: no se guarda con cuál
+     * equipo disputó cada partido puntual).
+     */
+    public function goleadores(string $columna, int $valor, int $limite = 10): array
+    {
+        if (!in_array($columna, ['liga_id', 'torneo_id'], true)) {
+            throw new InvalidArgumentException('Columna de filtro inválida.');
+        }
+
+        $sql = "SELECT j.id AS jugador_id, j.nombre, j.apellido, goleo.goles,
+                       (SELECT e2.id FROM jugador_equipos je2 JOIN equipos e2 ON e2.id = je2.equipo_id
+                        WHERE je2.jugador_id = j.id LIMIT 1) AS equipo_id,
+                       (SELECT e2.nombre FROM jugador_equipos je2 JOIN equipos e2 ON e2.id = je2.equipo_id
+                        WHERE je2.jugador_id = j.id LIMIT 1) AS equipo_nombre
+                FROM (
+                    SELECT ev.jugador_id, SUM(ev.goles) AS goles
+                    FROM jugador_partido_eventos ev
+                    JOIN partidos p ON p.id = ev.partido_id
+                    WHERE p.{$columna} = :valor
+                    GROUP BY ev.jugador_id
+                    HAVING goles > 0
+                ) goleo
+                JOIN jugadores j ON j.id = goleo.jugador_id
+                ORDER BY goleo.goles DESC
+                LIMIT " . (int) $limite;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['valor' => $valor]);
+
+        return $stmt->fetchAll();
+    }
 }

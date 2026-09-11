@@ -126,4 +126,19 @@ abstract class Controller
     {
         $_SESSION['flash_exito'] = $mensaje;
     }
+
+    /**
+     * Vuelve a la página desde la que se vino (HTTP_REFERER), validando que
+     * sea del mismo host para evitar un open redirect. Útil para acciones
+     * bloqueadas que deben mostrar una alerta sin sacar al usuario de donde
+     * estaba, en vez de mandarlo a un destino fijo.
+     */
+    protected function volverAOrigen(): void
+    {
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $destino = (parse_url($referer, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $referer : (BASE_URL . '/dashboard');
+
+        header('Location: ' . $destino);
+        exit;
+    }
 }

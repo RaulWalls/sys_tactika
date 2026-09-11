@@ -48,6 +48,41 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Filtra las opciones de concepto de pago según si hay equipo elegido:
+    // sin equipo solo se ven los conceptos de administración, con equipo
+    // solo los de equipo (select[data-ambito-filter] + option[data-ambito])
+    document.querySelectorAll('select[data-ambito-filter]').forEach(function (select) {
+        const target = document.getElementById(select.getAttribute('data-ambito-filter'));
+        if (!target) {
+            return;
+        }
+
+        const aplicar = function () {
+            const ambito = select.value ? 'equipo' : 'admin';
+            let seleccionValida = false;
+
+            Array.from(target.options).forEach(function (option) {
+                if (!option.value) {
+                    return;
+                }
+
+                const visible = option.getAttribute('data-ambito') === ambito;
+                option.hidden = !visible;
+
+                if (visible && option.selected) {
+                    seleccionValida = true;
+                }
+            });
+
+            if (!seleccionValida) {
+                target.value = '';
+            }
+        };
+
+        select.addEventListener('change', aplicar);
+        aplicar();
+    });
+
     // Excluir del datalist de rival el equipo ya elegido como "Equipo"
     // (select[data-datalist-target][data-equipos])
     document.querySelectorAll('select[data-datalist-target]').forEach(function (select) {

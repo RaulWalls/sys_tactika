@@ -31,6 +31,10 @@ define('UPLOADS_PATH', PUBLIC_PATH . '/uploads/equipos');
 define('UPLOADS_URL', BASE_URL . '/uploads/equipos');
 define('UPLOADS_PATH_JUGADORES', PUBLIC_PATH . '/uploads/jugadores');
 define('UPLOADS_URL_JUGADORES', BASE_URL . '/uploads/jugadores');
+define('UPLOADS_PATH_LIGAS', PUBLIC_PATH . '/uploads/ligas');
+define('UPLOADS_URL_LIGAS', BASE_URL . '/uploads/ligas');
+define('UPLOADS_PATH_TORNEOS', PUBLIC_PATH . '/uploads/torneos');
+define('UPLOADS_URL_TORNEOS', BASE_URL . '/uploads/torneos');
 
 // ---- Errores (desactivar display_errors en producción) ----
 error_reporting(E_ALL);

@@ -8,9 +8,18 @@
 <?php endif; ?>
 
 <div class="card form-card">
-    <form method="post" action="<?= BASE_URL ?>/ligas/crear">
+    <form method="post" action="<?= BASE_URL ?>/ligas/crear" enctype="multipart/form-data">
 
         <div class="row g-3">
+            <div class="col-md-12">
+                <label class="form-label">Escudo de la liga</label>
+                <div class="escudo-preview" id="escudo-preview">
+                    <span class="escudo-placeholder-icon" id="escudo-placeholder"><i class="fa-solid fa-trophy"></i></span>
+                    <img id="escudo-preview-img" src="" alt="Escudo" style="display:none;">
+                </div>
+                <input type="file" name="escudo" accept="image/*" class="form-control" data-preview-img="escudo-preview-img" data-preview-placeholder="escudo-placeholder">
+            </div>
+
             <div class="col-md-12">
                 <label class="form-label">Nombre</label>
                 <input type="text" name="nombre" class="form-control" placeholder="Liga Municipal San Manuel" value="<?= htmlspecialchars($liga['nombre'] ?? '') ?>" required>

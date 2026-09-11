@@ -38,6 +38,36 @@ class Pago extends Model
         ];
     }
 
+    /**
+     * Resumen financiero del reporte: suma por la categoría del concepto
+     * (cat_pagos.categoria = 'ingreso'/'gasto'), no por el tipo capturado en
+     * cada pago individual. Solo cuenta pagos ya marcados como pagados.
+     */
+    public function resumenReporte(): array
+    {
+        $ingresos = $this->sumarPorCategoria('ingreso');
+        $gastos = $this->sumarPorCategoria('gasto');
+
+        return [
+            'ingresos' => $ingresos,
+            'gastos' => $gastos,
+            'balance' => $ingresos - $gastos,
+        ];
+    }
+
+    private function sumarPorCategoria(string $categoria): float
+    {
+        $sql = "SELECT COALESCE(SUM(p.monto), 0)
+                FROM pagos p
+                JOIN cat_pagos c ON c.id = p.concepto_id
+                WHERE c.categoria = :categoria AND p.estado = 'pagado'";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['categoria' => $categoria]);
+
+        return (float) $stmt->fetchColumn();
+    }
+
     public function conJugador(?array $equipoIds = null, ?int $limite = null, int $offset = 0): array
     {
         if ($equipoIds !== null && empty($equipoIds)) {

@@ -142,13 +142,4 @@ class UsuariosController extends Controller
 
         $this->volverAOrigen();
     }
-
-    private function volverAOrigen(): void
-    {
-        $referer = $_SERVER['HTTP_REFERER'] ?? '';
-        $destino = (parse_url($referer, PHP_URL_HOST) === $_SERVER['HTTP_HOST']) ? $referer : (BASE_URL . '/dashboard');
-
-        header('Location: ' . $destino);
-        exit;
-    }
 }

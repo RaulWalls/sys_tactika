@@ -247,7 +247,7 @@ class JugadoresController extends Controller
 
             if ($miJugadorId !== $id) {
                 $this->flashError('No puedes ver el detalle de otro jugador.');
-                $this->redirect('jugadores');
+                $this->volverAOrigen();
             }
 
             return;

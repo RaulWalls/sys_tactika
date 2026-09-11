@@ -24,7 +24,9 @@
                 <?php if (!empty($ligas)): ?>
                     <?php foreach ($ligas as $l): ?>
                         <tr>
-                            <td><?= htmlspecialchars($l['nombre']) ?></td>
+                            <td>
+                                <a href="<?= BASE_URL ?>/ligas/detalle/<?= $l['id'] ?>" class="link-equipo"><?= htmlspecialchars($l['nombre']) ?></a>
+                            </td>
                             <td><?= htmlspecialchars($l['temporada'] ?? '-') ?></td>
                             <td><?= (int) $l['dias_partido_semana'] ?></td>
                             <td><span class="badge-estado badge-<?= $l['estado'] === 'activa' ? 'activo' : 'inactivo' ?>"><?= ucfirst($l['estado']) ?></span></td>

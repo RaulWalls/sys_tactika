@@ -28,7 +28,8 @@
 
 <!-- STATS -->
 <?php if ($esJugador): ?>
-    <div class="player-id-card">
+    <!-- Player ID Card -->
+    <!-- <div class="player-id-card">
         <span class="player-id-corner tl"></span>
         <span class="player-id-corner tr"></span>
         <span class="player-id-corner bl"></span>
@@ -48,6 +49,57 @@
         <div class="player-id-stats">
             <div><i class="fa-solid fa-trophy"></i> <?= (int) $miTotalLogros ?> LOGROS</div>
             <div><i class="fa-solid fa-medal"></i> <?= (int) $miTotalBadges ?> BADGES</div>
+        </div>
+    </div> -->
+    <!-- Player ID Card 2-->
+    <?php
+        $clubEscudo = $miJugador['equipos'][0]['escudo'] ?? null;
+        $posicionAbrev = mb_strtoupper(mb_substr(preg_replace('/\s+/', '', $miJugador['posicion_nombre'] ?? ''), 0, 3)) ?: '-';
+    ?>
+    <div class="player-id-card col-md-4">
+        
+        <span class="player-id-corner tl"></span>
+        <span class="player-id-corner tr"></span>
+        <span class="player-id-corner bl"></span>
+        <span class="player-id-corner br"></span>
+
+        <div class="fut-photo-wrap">
+            <?php if (!empty($miJugador['foto'])): ?>
+                <img class="fut-photo" src="<?= BASE_URL . '/' . htmlspecialchars($miJugador['foto']) ?>" alt="">
+            <?php else: ?>
+                <i class="fa-solid fa-shirt fut-photo-placeholder"></i>
+            <?php endif; ?>
+
+            <div class="fut-overlay-top">
+                <div class="fut-valoracion "><?= (int) $miValoracion ?></div>
+                <div class="fut-posicion"><?= htmlspecialchars($posicionAbrev) ?></div>
+                <i class="fut-rango <?= htmlspecialchars($miRango['icono'] ?? 'fa-solid fa-shield-halved') ?>" title="<?= htmlspecialchars($miRango['nombre'] ?? 'Sin rango') ?>"></i>
+            </div> 
+
+            <div class="fut-nombre"><?= htmlspecialchars(mb_strtoupper(($miJugador['nombre'] ?? '') . ' ' . ($miJugador['apellido'] ?? ''))) ?></div>
+        </div>
+
+        <div class="fut-stats">
+            <?php foreach ($misAtributos as $a): ?>
+                <div class="fut-stat">
+                    <span class="fut-stat-valor"><?= (int) $a['valor'] ?></span>
+                    <span class="fut-stat-abrev"><?= htmlspecialchars($a['abreviatura']) ?></span>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="fut-footer">
+            <span class="fut-footer-icon" title="<?= htmlspecialchars($miJugador['equipos'][0]['nombre'] ?? 'Sin equipo') ?>">
+                <?php if ($clubEscudo): ?>
+                    <img src="<?= BASE_URL . '/' . htmlspecialchars($clubEscudo) ?>" alt="">
+                <?php else: ?>
+                    <i class="fa-solid fa-shield-halved"></i>
+                <?php endif; ?>
+            </span>
+            <span class="fut-footer-icon" title="Táctika">
+                <i class="fa-solid fa-futbol"></i>
+            </span>
+            <span class="fut-footer-flag" title="México">🇲🇽</span>
         </div>
     </div>
 

@@ -96,6 +96,100 @@ class Partido extends Model
         return (int) $stmt->fetchColumn();
     }
 
+    private const FILTROS_VALIDOS = ['liga_id', 'torneo_id'];
+
+    /**
+     * Partidos jugados filtrados por liga o por torneo (para los reportes).
+     */
+    public function jugadosPorFiltro(string $columna, int $valor): array
+    {
+        if (!in_array($columna, self::FILTROS_VALIDOS, true)) {
+            throw new InvalidArgumentException('Columna de filtro inválida.');
+        }
+
+        $stmt = $this->db->prepare(
+            "SELECT * FROM partidos
+             WHERE {$columna} = :valor AND estado = 'jugado' AND goles_favor IS NOT NULL AND goles_contra IS NOT NULL"
+        );
+        $stmt->execute(['valor' => $valor]);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Tabla de posiciones filtrada por liga o por torneo (puntos: victoria=3,
+     * empate=1). Cada partido solo se guarda desde la perspectiva del
+     * equipo local (equipo_id), así que el rival se acredita resolviendo su
+     * nombre contra la tabla equipos.
+     */
+    public function tablaPosiciones(string $columna, int $valor): array
+    {
+        if (!in_array($columna, self::FILTROS_VALIDOS, true)) {
+            throw new InvalidArgumentException('Columna de filtro inválida.');
+        }
+
+        $stmt = $this->db->prepare(
+            "SELECT p.equipo_id, e.nombre AS equipo_nombre, p.rival, p.goles_favor, p.goles_contra
+             FROM partidos p
+             LEFT JOIN equipos e ON e.id = p.equipo_id
+             WHERE p.{$columna} = :valor AND p.estado = 'jugado'
+                   AND p.goles_favor IS NOT NULL AND p.goles_contra IS NOT NULL"
+        );
+        $stmt->execute(['valor' => $valor]);
+        $partidos = $stmt->fetchAll();
+
+        $equipoModel = new Equipo();
+        $tabla = [];
+
+        $inicializar = function (int $id, string $nombre) use (&$tabla): void {
+            if (!isset($tabla[$id])) {
+                $tabla[$id] = ['equipo_id' => $id, 'nombre' => $nombre, 'pj' => 0, 'g' => 0, 'e' => 0, 'p' => 0, 'gf' => 0, 'gc' => 0];
+            }
+        };
+
+        $acreditar = function (int $id, int $gf, int $gc) use (&$tabla): void {
+            $tabla[$id]['pj']++;
+            $tabla[$id]['gf'] += $gf;
+            $tabla[$id]['gc'] += $gc;
+            if ($gf > $gc) {
+                $tabla[$id]['g']++;
+            } elseif ($gf === $gc) {
+                $tabla[$id]['e']++;
+            } else {
+                $tabla[$id]['p']++;
+            }
+        };
+
+        foreach ($partidos as $p) {
+            $gf = (int) $p['goles_favor'];
+            $gc = (int) $p['goles_contra'];
+
+            if ($p['equipo_id']) {
+                $inicializar((int) $p['equipo_id'], $p['equipo_nombre']);
+                $acreditar((int) $p['equipo_id'], $gf, $gc);
+            }
+
+            if (!empty($p['rival'])) {
+                $rivalEquipo = $equipoModel->porNombre($p['rival']);
+                if ($rivalEquipo) {
+                    $inicializar((int) $rivalEquipo['id'], $rivalEquipo['nombre']);
+                    $acreditar((int) $rivalEquipo['id'], $gc, $gf);
+                }
+            }
+        }
+
+        foreach ($tabla as &$fila) {
+            $fila['dg'] = $fila['gf'] - $fila['gc'];
+            $fila['pts'] = $fila['g'] * 3 + $fila['e'];
+        }
+        unset($fila);
+
+        $filas = array_values($tabla);
+        usort($filas, fn ($a, $b) => $b['pts'] <=> $a['pts'] ?: $b['dg'] <=> $a['dg'] ?: $b['gf'] <=> $a['gf']);
+
+        return $filas;
+    }
+
     /**
      * Partidos jugados de un equipo, ordenados cronológicamente (para
      * calcular rachas, promedios y máximos por partido en el motor de

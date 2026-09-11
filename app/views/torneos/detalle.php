@@ -44,19 +44,64 @@
     <?php };
 ?>
 
-<div class="welcome d-flex align-items-center justify-content-between">
-    <div>
-        <h1><?= htmlspecialchars($torneo['nombre']) ?></h1>
-        <p>
-            <?= htmlspecialchars($torneo['liga_nombre'] ?? '') ?> ·
-            <?= (int) $torneo['total_equipos'] ?> equipos ·
-            <?= date('d M Y', strtotime($torneo['fecha_inicio'])) ?> — <?= date('d M Y', strtotime($torneo['fecha_fin'])) ?>
-        </p>
+<div class="welcome detalle-header d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-3">
+        <div class="team-logo detalle-logo">
+            <?php if (!empty($torneo['imagen'])): ?>
+                <img src="<?= BASE_URL . '/' . htmlspecialchars($torneo['imagen']) ?>" alt="Imagen">
+            <?php else: ?>
+                <i class="fa-solid fa-sitemap"></i>
+            <?php endif; ?>
+        </div>
+
+        <div>
+            <h1><?= htmlspecialchars($torneo['nombre']) ?></h1>
+            <p>
+                <?= htmlspecialchars($torneo['liga_nombre'] ?? '') ?> ·
+                <span class="badge-estado badge-<?= $torneo['estado'] === 'finalizado' ? 'activo' : 'pendiente' ?>"><?= ucfirst(str_replace('_', ' ', $torneo['estado'])) ?></span>
+            </p>
+        </div>
     </div>
-    <a href="<?= BASE_URL ?>/torneos" class="btn btn-outline-secondary">← Volver</a>
+
+    <div class="d-flex gap-2">
+        <?php if ($this->tienePermiso('editar')): ?>
+            <a href="<?= BASE_URL ?>/torneos/editar/<?= $torneo['id'] ?>" class="btn btn-outline-secondary">Editar</a>
+        <?php endif; ?>
+        <a href="<?= BASE_URL ?>/torneos" class="btn btn-outline-secondary">← Volver</a>
+    </div>
+</div>
+
+<!-- DATOS GENERALES -->
+<div class="card mb-3">
+    <div class="section-header">
+        <h2>Datos generales</h2>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <span class="detalle-label">Liga</span>
+            <div class="detalle-valor"><?= htmlspecialchars($torneo['liga_nombre'] ?? '-') ?></div>
+        </div>
+
+        <div class="col-md-4">
+            <span class="detalle-label">Tipo de eliminatoria</span>
+            <div class="detalle-valor"><?= (int) $torneo['total_equipos'] ?> equipos</div>
+        </div>
+
+        <div class="col-md-4">
+            <span class="detalle-label">Periodo</span>
+            <div class="detalle-valor">
+                <?= date('d M Y', strtotime($torneo['fecha_inicio'])) ?> — <?= date('d M Y', strtotime($torneo['fecha_fin'])) ?>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="card">
+    <div class="section-header">
+        <h2>Bracket</h2>
+    </div>
+
     <div class="table-responsive">
 
         <?php if (!$es16): ?>

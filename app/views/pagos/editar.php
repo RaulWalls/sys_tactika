@@ -7,16 +7,17 @@
     <form method="post" action="<?= BASE_URL ?>/pagos/editar/<?= $pago['id'] ?>">
 
         <div class="row g-3">
-            <div class="col-md-12">
-                <label class="form-label">Concepto</label>
-                <select name="concepto_id" class="form-select" data-fill-target="monto" required>
-                    <option value="">Selecciona un concepto</option>
-                    <?php foreach ($conceptos as $c): ?>
-                        <option value="<?= $c['id'] ?>" data-monto="<?= $c['monto'] !== null ? $c['monto'] : '' ?>" <?= (int) ($pago['concepto_id'] ?? 0) === (int) $c['id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($c['nombre']) ?><?= $c['monto'] !== null ? ' ($' . number_format($c['monto'], 2) . ')' : '' ?>
+            <div class="col-md-6">
+                <label class="form-label">Equipo (opcional)</label>
+                <select name="equipo_id" id="equipo_id" class="form-select" data-ambito-filter="concepto_id">
+                    <option value="">Ninguno (concepto de administración)</option>
+                    <?php foreach ($equipos as $e): ?>
+                        <option value="<?= $e['id'] ?>" <?= $pago['equipo_id'] == $e['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($e['nombre']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
+                <div class="form-text">Sin equipo, el concepto se limita a los de administración. Con equipo, a los de equipo.</div>
             </div>
 
             <div class="col-md-6">
@@ -31,13 +32,13 @@
                 </select>
             </div>
 
-            <div class="col-md-6">
-                <label class="form-label">Equipo (opcional)</label>
-                <select name="equipo_id" class="form-select">
-                    <option value="">Ninguno</option>
-                    <?php foreach ($equipos as $e): ?>
-                        <option value="<?= $e['id'] ?>" <?= $pago['equipo_id'] == $e['id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($e['nombre']) ?>
+            <div class="col-md-12">
+                <label class="form-label">Concepto</label>
+                <select name="concepto_id" id="concepto_id" class="form-select" data-fill-target="monto" required>
+                    <option value="">Selecciona un concepto</option>
+                    <?php foreach ($conceptos as $c): ?>
+                        <option value="<?= $c['id'] ?>" data-monto="<?= $c['monto'] !== null ? $c['monto'] : '' ?>" data-ambito="<?= htmlspecialchars($c['ambito']) ?>" <?= (int) ($pago['concepto_id'] ?? 0) === (int) $c['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars(trim($c['nombre'])) ?><?= $c['monto'] !== null ? ' ($' . number_format($c['monto'], 2) . ')' : '' ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

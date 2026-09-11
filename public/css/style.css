@@ -1178,6 +1178,9 @@ a {
 .player-id-card {
     position: relative;
 
+    max-height: 500px;
+    max-width: 270px;
+
     background: var(--surface);
     border: 1px dashed var(--border);
     border-radius: 12px;
@@ -1648,6 +1651,188 @@ a {
     border-color: transparent transparent var(--primary);
 }
 
+
+/* =========================
+   FUT CARD (dashboard jugador)
+========================= */
+
+.fut-card {
+    padding: 0;
+    text-align: left;
+    overflow: hidden;
+}
+
+.fut-photo-wrap {
+    position: relative;
+    height: 220px;
+    background: var(--primary-light);
+    overflow: hidden;
+}
+
+.fut-photo {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.fut-photo-placeholder {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 64px;
+    color: var(--primary);
+}
+
+.fut-overlay-top {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    padding: 8px 10px;
+    border-radius: 8px;
+
+    background: rgba(0, 0, 0, .45);
+    color: #fff;
+}
+
+.fut-valoracion {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.fut-posicion {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, .3);
+}
+
+.fut-rango {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, .15);
+    color: #fff;
+    font-size: 11px;
+}
+
+.fut-nombre {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+
+    padding: 24px 10px 8px;
+
+    background: linear-gradient(transparent, rgba(0, 0, 0, .65));
+    color: #fff;
+
+    text-align: center;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .5px;
+}
+
+.fut-stats {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+
+    padding: 16px 10px;
+    border-bottom: 1px dashed var(--border);
+}
+
+.fut-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.fut-stat-valor {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.fut-stat-abrev {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .5px;
+}
+
+.fut-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+
+    padding: 12px;
+}
+
+.fut-footer-icon {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--muted);
+    font-size: 16px;
+    overflow: hidden;
+}
+
+.fut-footer-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.fut-footer-flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 28px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 4px;
+
+    background: var(--primary-light);
+    color: var(--primary);
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .5px;
+}
+
 @media (max-width: 750px) {
     .auth-card {
         min-height: 0;
@@ -1797,6 +1982,53 @@ a {
 
     .team {
         width: 80px;
+    }
+
+    /* Encabezados de detalle (jugador/equipo): foto centrada y más grande,
+       nombre/datos debajo, y los botones al final. */
+    .welcome {
+        flex-wrap: wrap;
+        row-gap: 12px;
+    }
+
+    .detalle-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .detalle-header > div:first-child {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .detalle-header .detalle-logo {
+        width: 110px;
+        height: 110px;
+        font-size: 44px;
+        margin: 0 auto;
+    }
+
+    .detalle-header > div:last-child {
+        justify-content: center;
+    }
+
+    /* Tablas: pista visual de que se puede arrastrar para ver más columnas. */
+    .table-responsive {
+        position: relative;
+        padding-top: 22px;
+    }
+
+    .table-responsive::before {
+        content: "\f05a \20 \f054\f054";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+
+        position: absolute;
+        top: 0;
+        right: 4px;
+
+        font-size: 13px;
+        color: var(--primary);
     }
 }
 
