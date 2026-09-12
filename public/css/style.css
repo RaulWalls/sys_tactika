@@ -43,24 +43,20 @@ body[data-theme="barcelona"] {
     --primary: #8e0044;
     --primary-dark: #294c97;
     --primary-light: #f5e0e9;
+    --text-light: #8e0044;
     --sidebar-color: #294c97;
     --background: #f5e0e9;
-    /* --text: #e1bb00; */
     --text-logo: #e1bb00;
-    --text-light: #8e0044;
-    /* bd002c */
 }
-
 body[data-theme="real_madrid"] {
     --primary: #efbe0b;
     --primary-dark: #1c3568;
     --primary-light: #eef2fb;
+    --text-light: #efbe0b;
     --sidebar-color: #1c3568;
     --background: #eef2fb;
-    --text-light: #efbe0b;
-    /* d0324b */
+    --text-logo: #d0324b;
 }
-
 body[data-theme="manchester_city"] {
     --primary: #172b5f;
     --primary-dark: #0d1938;
@@ -68,49 +64,71 @@ body[data-theme="manchester_city"] {
     --text-light: #172b5f;
     --sidebar-color: #a2bfe7;
     --background: #f7ecd3;
+    /* --text-logo: #f2c757; */
     --text-sidebar: #172b5f;
-    /* #f2c757 */
 }
-
 body[data-theme="psg"] {
     --primary: #d02f36;
     --primary-dark: #2c5195;
     --primary-light: #fbe5e6;
-    --sidebar-color: #2c5195;
     --text-light: #d02f36;
-    --text-sidebar: #fff;
+    --sidebar-color: #2c5195;
     --background: #c7bea2;
+    --text-logo: #ac9755;
+    --text-sidebar: #fff;
 }
 body[data-theme="juventus"] {
+    /* --amarillo #fec72e; */
+    /* --rosa #e88eb6; */
     --primary: #000000;
     --primary-dark: #1c1c1c;
     --primary-light: #f0f0f0;
+    --text-light: #e88eb6;
+    --sidebar-color: #1c1c1c;
+    --background: #f0f0f0;
+    --text-logo: #fff;
+    --text-sidebar: #e88eb6;
 }
 body[data-theme="bayern_munich"] {
     --primary: #d32f2f;
     --primary-dark: #1c1c1c;
     --primary-light: #fbe5e5;
+    --text-light: #d32f2f;
+    --sidebar-color: #1c1c1c;
+    --background: #fbe5e5;
+    --text-logo: #fff;
+    --text-sidebar: #e5e5e5;
 }
 body[data-theme="liverpool"] {
     --primary: #c8102e;
     --primary-dark: #1c1c1c;
     --primary-light: #fbe5e5;
+    --text-light: #c8102e;
+    --sidebar-color: #1c1c1c;
+    --background: #fbe5e5;
+    --text-logo: #fff;
+    --text-sidebar: #e5e5e5;
 }
 body[data-theme="chelsea"] {
     --primary: #034694;
     --primary-dark: #1c1c1c;
     --primary-light: #e5f0fb;
+    --text-light: #034694;
+    --sidebar-color: #1c1c1c;
+    --background: #e5f0fb;
+    --text-logo: #fff;
+    --text-sidebar: #e5e5e5;
 }
 body[data-theme="america"] {
     --primary:  #f6303e;
     --primary-dark: #0f1d41;
     --primary-light:#f0eb9a;
-    /* --background: #f0eb9a; */
-    --sidebar-color: #f0eb9a;
-    --text-logo: #0f1d41;
-    --text: #0f1d41;
-    --text-sidebar: #0f1d41;
     --text-light: #f6303e;
+    --sidebar-color: #f0eb9a;
+    /* --background: #f0eb9a; */
+    --text-logo: #0f1d41;
+    --text-sidebar: #0f1d41;
+    --text: #0f1d41;
 }
 
 
